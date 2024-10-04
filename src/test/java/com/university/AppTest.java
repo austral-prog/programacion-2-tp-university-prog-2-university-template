@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SolutionTest {
+public class AppTest {
 
     @Test
     public void testSolutionCSVMatchesExpected() {
