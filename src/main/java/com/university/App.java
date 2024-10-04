@@ -47,7 +47,7 @@ class Student {
 }
     public class App {
         public static void main(String[] args) {
-            String filePath = "E:\\Desktop\\Prog\\Prog-2-Java\\src\\TpUniverity\\input.csv";
+            String filePath = "src/main/resources/input.csv";
             String line;
             HashSet<Student> students = new HashSet<>();
             try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -70,7 +70,7 @@ class Student {
                 e.printStackTrace();
             }
 
-            String newFilePath = "E:\\Desktop\\Prog\\Prog-2-Java\\src\\TpUniverity\\solution.csv";
+            String newFilePath = "src/main/resources/";
             ArrayList<Student> studentsList = new ArrayList<>(students);
             studentsList.sort(Comparator.comparing(Student::getName));
 
