@@ -70,7 +70,7 @@ class Student {
                 e.printStackTrace();
             }
 
-            String newFilePath = "src/main/resources/";
+            String newFilePath = "src/main/resources/solution.csv";
             ArrayList<Student> studentsList = new ArrayList<>(students);
             studentsList.sort(Comparator.comparing(Student::getName));
 
