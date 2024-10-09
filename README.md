@@ -42,3 +42,14 @@ The goal of this assignment is to create a Java program that reads student data 
 
 - Complete the implementation in `App.java` to read, process, and write the CSV files.
 - Ensure your code passes the test in `AppTest.java`, plus your own tests.
+
+
+# 2 - Submit date: October 11th - Java CSV Aggregation Assignment
+
+## Objective
+
+The goal of this assignment is to extend the previous Java program to read student data from a CSV file, process it, and output aggregated data to another CSV file. You will also write tests to verify that you designed classes work as they are supposed to.
+
+New input file:
+- `input_2.csv`: Contains additional student data.
+- `expected_2.csv`: Expected output after processing the new input file.
