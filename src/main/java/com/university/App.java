@@ -99,7 +99,7 @@ class Evaluation {
         return evaluationName.hashCode();
     }
 }
-    public class App {
+public class App {
         public static void main(String[] args) {
             String readFilePath = "src/main/resources/input.csv";
             String line;
