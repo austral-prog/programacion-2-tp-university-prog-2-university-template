@@ -53,3 +53,23 @@ The goal of this assignment is to extend the previous Java program to read stude
 New input file:
 - `input_2.csv`: Contains additional student data.
 - `expected_2.csv`: Expected output after processing the new input file.
+
+# 3 - Submit date: October 25th - Java CSV Aggregation Assignment
+
+## Objective
+
+The goal of this assignment is to extend the previous Java program to read student data from a CSV file, process it, and output aggregated data to another CSV file. You will also write tests to verify that you designed classes work as they are supposed to.
+
+New input file:
+- `input_3.csv`: Contains additional student data.
+
+To be added:
+- `expected_3.csv`: Expected output after processing the new input file.
+
+When finishing this third assignment you should have in your code:
+
+- at least one inheritance relationship
+- at least one interface
+- at least one generic class
+- your classes organized in packages
+- over 80% test coverage

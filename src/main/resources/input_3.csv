@@ -1,0 +1,35 @@
+Subject_Name,Criteria_Type,Criteria_Value,Evaluation_Name
+Geography,AVERAGE_ABOVE_VALUE,6.0,TP1,TP4,TP2,TP3
+Geography,MAX_ABOVE_VALUE,4.0,Examen Final
+Economics,MAX_ABOVE_VALUE,4.0,Examen Final
+Economics,MIN_ABOVE_VALUE,4.0,Primer Parcial,Segundo Parcial
+Art,AVERAGE_ABOVE_VALUE,6.0,TP2,TP10,TP5,TP8,TP9,TP7,TP4,TP1,TP6,TP3
+Art,MAX_ABOVE_VALUE,6.0,TP Final
+Psychology,MAX_ABOVE_VALUE,4.0,Examen Final
+Psychology,MIN_ABOVE_VALUE,4.0,Segundo Parcial,Primer Parcial
+Biology,MAX_ABOVE_VALUE,4.0,Examen Final
+Biology,MIN_ABOVE_VALUE,4.0,Primer Parcial,Segundo Parcial
+Mathematics,AVERAGE_ABOVE_VALUE,6.0,TP1,TP3,TP2
+Mathematics,MAX_ABOVE_VALUE,4.0,Examen Final
+Mathematics,MIN_ABOVE_VALUE,4.0,Segundo Parcial,Primer Parcial
+History,MAX_ABOVE_VALUE,4.0,Examen Final
+History,MIN_ABOVE_VALUE,4.0,Primer Parcial,Segundo Parcial
+Statistics,MAX_ABOVE_VALUE,4.0,Examen Final
+Statistics,MIN_ABOVE_VALUE,4.0,Segundo Parcial,Primer Parcial
+Physics,AVERAGE_ABOVE_VALUE,6.0,TP1,TP2,TP3
+Physics,MAX_ABOVE_VALUE,4.0,Examen Final
+Physics,MIN_ABOVE_VALUE,4.0,Primer Parcial,Segundo Parcial
+English,MAX_ABOVE_VALUE,4.0,Examen Final
+English,MIN_ABOVE_VALUE,4.0,Segundo Parcial,Primer Parcial
+Chemistry,MAX_ABOVE_VALUE,4.0,Examen Final
+Chemistry,MIN_ABOVE_VALUE,4.0,Segundo Parcial,Primer Parcial
+Sociology,MAX_ABOVE_VALUE,4.0,Examen Final
+Sociology,MIN_ABOVE_VALUE,4.0,Segundo Parcial,Primer Parcial
+Music,AVERAGE_ABOVE_VALUE,6.0,TP3,TP7,TP4,TP2,TP9,TP1,TP8,TP6,TP5,TP10
+Music,MAX_ABOVE_VALUE,6.0,TP Final
+Music,MAX_ABOVE_VALUE,4.0,Examen Final
+Computer Science,AVERAGE_ABOVE_VALUE,6.0,TP8,TP4,TP9,TP1,TP2,TP6,TP7,TP5,TP10,TP3
+Computer Science,MAX_ABOVE_VALUE,6.0,TP Final
+Philosophy,MAX_ABOVE_VALUE,4.0,Examen Final
+Philosophy,MIN_ABOVE_VALUE,4.0,Primer Parcial,Segundo Parcial
+
