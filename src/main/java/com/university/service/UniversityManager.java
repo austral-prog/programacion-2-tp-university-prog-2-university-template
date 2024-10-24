@@ -1,9 +1,11 @@
 package TpUniversity.service;
 import TpUniversity.model.*;
+import TpUniversity.service.EvaluationCriteriaManager.AverageAboveValue;
+import TpUniversity.service.EvaluationCriteriaManager.EvaluationCriteria;
+import TpUniversity.service.EvaluationCriteriaManager.MaxAboveValue;
+import TpUniversity.service.EvaluationCriteriaManager.MinAboveValue;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class UniversityManager {
 
@@ -47,7 +49,7 @@ public class UniversityManager {
         return outputData;
     }
 
-    public List<String[]> secondTaskLogic(List<String[]> inputData) {
+    public Box<List<String[]>, List<Evaluation>> secondTaskLogic(List<String[]> inputData) {
         ArrayList<Evaluation> evaluations = new ArrayList<>();
         boolean isFirstLine = true; // flag para ignorar la primer linea (header)
         for (String[] strings : inputData) {
@@ -82,25 +84,104 @@ public class UniversityManager {
 
         }
 
+        evaluations.sort(Comparator.comparing(Evaluation::getName)
+                .thenComparing(Evaluation::getEvaluationName)
+                .thenComparing(Evaluation::getSubject));
+
         List<String[]> output = new ArrayList<>();
         for (Evaluation evaluation : evaluations) {
             String[] line = evaluation.getData();
             output.add(line);
         }
 
-        // Sort by Student_Name, then Evaluation_Name, and finally Subject_Name
-        output.sort(Comparator.comparing((String[] array) -> array[2])  // Sort by Student_Name
+// Sort by Subject_Name, then Evaluation_Name, and finally Student_Name
+        output.sort(Comparator.comparing((String[] array) -> array[0])  // Sort by Subject_Name
                 .thenComparing(array -> array[1])                       // Then by Evaluation_Name
-                .thenComparing(array -> array[0]));                     // Then by Subject_Name
-
+                .thenComparing(array -> array[2]));                     // Then by Student_Name
+        // Sort the list for later use
+        evaluations.sort(Comparator.comparing(Evaluation::getSubject)
+                .thenComparing(Evaluation::getEvaluationName)
+                .thenComparing(Evaluation::getStudentName));
 
         String[] header = {"Subject_Name","Evaluation_Name","Student_Name", "Grade"};
         output.addFirst(header);
-
-        return output;
+        // Box is a class to return two variables
+        return new Box<>(output, evaluations);
     }
-    public List<String[]> thirdTaskLogic(List<String[]> inputData) {
-        List<String[]> outputData = new ArrayList<>(inputData);
+    public List<String[]> thirdTaskLogic(List<String[]> inputOf3List, Box<List<String[]>, List<Evaluation>> processedData) {
+
+        List<String[]> outputData = new ArrayList<>();                // objective return
+        List<Evaluation> evaluationsList = processedData.getSecond(); // retriving variables from Box object
+        String[] inputOf3Row;                                         // declaration of array variavbles
+        boolean isFirstLine = true;
+
+        Map<String, EvaluationCriteria> criteriaMap = new HashMap<>();
+        criteriaMap.put("AVERAGE_ABOVE_VALUE", new AverageAboveValue());
+        criteriaMap.put("MAX_ABOVE_VALUE", new MaxAboveValue());
+        criteriaMap.put("MIN_ABOVE_VALUE", new MinAboveValue());// flag to ignore the first line
+
+        for (String[] strings : inputOf3List) { // i es el index de el input, con los datos para evaluar
+
+            if (isFirstLine) {
+                isFirstLine = false;
+                continue;
+            }
+
+            inputOf3Row = strings;
+
+            for (Evaluation evaluation : evaluationsList) { // j es el index de las evaluaciones
+                if (evaluation.isEvaluated()) {
+                    continue;
+                }
+                for (int k = 3; k < inputOf3Row.length; k++) { // k es el index de los tipos de evaluaciones
+
+                    //items in array; Subject_Name,Criteria_Type,Criteria_Value,Evaluation_Name
+
+                    if (inputOf3Row[k].equals(evaluation.getEvaluationName())) { // found evaluation
+
+                        String criteriaType = inputOf3Row[1];
+                        String criteriaValue = inputOf3Row[2];
+
+                        EvaluationCriteria criteria = criteriaMap.get(criteriaType);
+
+                        criteria.apply(evaluation, Double.parseDouble(criteriaValue), criteriaType);
+                    }
+                }
+
+            }
+        }
+        for (Evaluation evaluation : evaluationsList) {
+            String[] line = evaluation.getAltData();
+            outputData.add(line);
+        }
+        // Sort by Subject_Name, then Evaluation_Name, and finally Student_Name
+        outputData.sort(Comparator.comparing((String[] array) -> array[0])  // Sort by Subject_Name
+                .thenComparing(array -> array[1])                           // Then by Evaluation_Name
+                .thenComparing(array -> array[2]));                         // Then by Student_Name
+
+        String[] header = {"Subject_Name","Evaluation_Name","Student_Name","Evaluation_Type","Grade","Criteria","Criteria_Value","Passed","Min","Max"};
+        outputData.addFirst(header);
         return outputData;
+    }
+    void AVERAGE_ABOVE_VALUE(Evaluation evaluation, double value) {
+        evaluation.setEvaluated(true);
+        evaluation.setCriteria("AVERAGE_ABOVE_VALUE");
+        if (evaluation.getAverage() > value) {
+            evaluation.setPassed(true);
+        }
+    }
+    void MAX_ABOVE_VALUE(Evaluation evaluation, double value) {
+        evaluation.setEvaluated(true);
+        evaluation.setCriteria("MAX_ABOVE_VALUE");
+        if (evaluation.getMax() > value) {
+            evaluation.setPassed(true);
+        }
+    }
+    void MIN_ABOVE_VALUE(Evaluation evaluation, double value) {
+        evaluation.setEvaluated(true);
+        evaluation.setCriteria("MIN_ABOVE_VALUE");
+        if (evaluation.getMin() > value) {
+            evaluation.setPassed(true);
+        }
     }
 }
