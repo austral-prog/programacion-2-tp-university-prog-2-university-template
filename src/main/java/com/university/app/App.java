@@ -23,9 +23,9 @@ public class App {
         CSVWriter writer = new CSVWriter();
         UniversityManager manager = new UniversityManager();
 
-        List<String[]> inputData = reader.readCSV("src/main/resources/input.csv");
+        List<String[]> inputData = reader.readCSV("src/TpUniversity/input.csv");
         List<String[]> outputData = manager.firstTaskLogic(inputData);
-        writer.writeCSV("src/main/resources/solution.csv", outputData);
+        writer.writeCSV("src/TpUniversity/solution.csv", outputData);
     }
 
     public void task2() {
@@ -33,7 +33,6 @@ public class App {
         CSVWriter writer = new CSVWriter();
         UniversityManager manager = new UniversityManager();
 
-<<<<<<< HEAD
         List<String[]> inputData = reader.readCSV("src/TpUniversity/input_2.csv");
         this.processedData = manager.secondTaskLogic(inputData);
         writer.writeCSV("src/TpUniversity/solution_2.csv", processedData.getFirst());
@@ -48,10 +47,5 @@ public class App {
         List<String[]> inputData = reader.readCSV("src/TpUniversity/input_3.csv");
         List<String[]> outputData = manager.thirdTaskLogic(inputData, processedData);
         writer.writeCSV("src/TpUniversity/solution_3.csv", outputData);
-=======
-        List<String[]> inputData = reader.readCSV("src/main/resources/input_2.csv");
-        List<String[]> outputData = manager.secondTaskLogic(inputData);
-        writer.writeCSV("src/main/resources/solution_2.csv", outputData);
->>>>>>> 2166ae0580f33517d68f924cdf1f6e6f891fc7fa
     }
 }
