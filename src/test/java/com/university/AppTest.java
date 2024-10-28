@@ -30,6 +30,10 @@ public class AppTest {
             throw new RuntimeException("Failed to execute App.main()");
         }
 
+        String solutionFilePath = "src/main/resources/expected.csv";
+        String expectedFilePath = "src/main/resources/expected.csv";
+
+
         // Check if solution.csv was created after running the test
         if (!Files.exists(Paths.get(solutionFilePath))) {
             fail("The solution.csv file does not exist after running the test.");
@@ -42,11 +46,11 @@ public class AppTest {
             String solutionLine;
             String expectedLine;
 
-            while ((solutionLine = solutionReader.readLine()) != null && 
-                   (expectedLine = expectedReader.readLine()) != null) {
+            while ((solutionLine = solutionReader.readLine()) != null &&
+                    (expectedLine = expectedReader.readLine()) != null) {
                 assertEquals(expectedLine, solutionLine, "Mismatch found in the CSV file content.");
             }
-            
+
             // Ensure both files have the same number of lines
             assertEquals(solutionReader.readLine(), expectedReader.readLine(), "Files have different number of lines.");
 
