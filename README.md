@@ -54,6 +54,11 @@ New input file:
 - `input_2.csv`: Contains additional student data.
 - `expected_2.csv`: Expected output after processing the new input file.
 
+For final exams, the grade is the sum of the grades
+For Practical Works, the grade is the last grade
+For Oral exams, the grade is the only grade they have
+For Written exams, the grade is the average grade
+
 # 3 - Submit date: October 25th - Java CSV Aggregation Assignment
 
 ## Objective
@@ -73,3 +78,15 @@ When finishing this third assignment you should have in your code:
 - at least one generic class
 - your classes organized in packages
 - over 80% test coverage
+
+# 4 - CRUD and CLI
+
+## Objective
+
+The goal of this assignment is to have a CLI (command line interface) app to manually create any entity in your existing model, and apply the CRUDRepository interfaces to your existing model.
+
+When finishing this fourth assignment you should have in your code:
+
+- a CLI main to manually create any of your system's entities.
+- Have CRUD objects that follow the given CRUDRepository interface.
+- Have and properly handle exceptions in your code.
