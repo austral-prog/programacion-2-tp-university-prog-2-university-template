@@ -1,5 +1,6 @@
-package TpUniversity.service;
+package com.university;
 
+import com.university.service.ReportGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,11 +11,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UniversityManagerTest {
 
-    UniversityManager manager;
+    ReportGenerator manager;
 
     @BeforeEach
     public void setUp() {
-        manager = new UniversityManager();
+        manager = new ReportGenerator();
     }
 
     @Test
@@ -29,7 +30,7 @@ public class UniversityManagerTest {
         inputData.add(new String[]{"15", "Biology", "Pepe Aurelio", "genericMail@hotmail.com", "Juan"});
 
         // Run the logic
-        List<String[]> outputData = manager.firstTaskLogic(inputData);
+        List<String[]> outputData = manager.firstReport(inputData);
 
         // Output the results for visual validation
         System.out.println("Test FirstTaskLogic:");
@@ -60,7 +61,7 @@ public class UniversityManagerTest {
 
 
         // Run the logic
-        List<String[]> outputData = manager.secondTaskLogic(inputData);
+        List<String[]> outputData = manager.secondReport(inputData);
 
         // Output the results for visual validation
         System.out.println("\nTest SecondTaskLogic:");

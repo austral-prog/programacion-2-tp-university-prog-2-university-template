@@ -1,14 +1,15 @@
-package TpUniversity.service.EvaluationCriteriaManager;
+package com.university.service.CriteriaAnalyzer;
 
-import TpUniversity.model.Evaluation;
+import com.university.model.Evaluations.Evaluation;
 
-public class MaxAboveValue implements EvaluationCriteria {
+public class AverageAboveValue implements CriteriaApplier {
+
     @Override
     public void apply(Evaluation evaluation, double value, String criteria) {
         evaluation.setEvaluated(true);
         evaluation.setCriteria(criteria);
         evaluation.setCriteriaValue(value);
-        if (evaluation.getMax() > value) {
+        if (evaluation.getAverage() > value) {
             evaluation.setPassed(true);
         }
     }

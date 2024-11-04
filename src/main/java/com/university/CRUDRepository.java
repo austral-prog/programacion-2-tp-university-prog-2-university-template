@@ -1,5 +1,7 @@
 package com.university;
 
+import com.university.model.Entity;
+
 public interface CRUDRepository<T extends Entity> {
     /**
      * Creates a new entity in the repository.
