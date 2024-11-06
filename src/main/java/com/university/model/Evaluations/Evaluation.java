@@ -16,7 +16,7 @@ public abstract class Evaluation extends Entity {
     private final Student student;
     private String evaluationType;
     private boolean passed;
-    private boolean evaluated = false;
+    boolean evaluated = false;
     private String criteria;
     private double criteriaValue;
 
@@ -27,29 +27,69 @@ public abstract class Evaluation extends Entity {
         this.student = student;
     }
 
-    public String getName(){return this.evaluationName;}
-
-    public String getStudentName(){return this.student.getName();}
-
-    public Subject getSubject(){
-        return this.subject;
+    public String getName() {
+        return evaluationName;
     }
 
-    public  String getEvaluationName(){return this.evaluationName;}
+    public String getStudentName() {
+        return this.student.getName();
+    }
 
-    public boolean isEvaluated() {return this.evaluated;}
+    public Student getStudent() {
+        return student;
+    }
 
-    public void addExercise(Exercise exercise){exercises.add(exercise);}
+    public Subject getSubject() {
+        return subject;
+    }
 
-    public void setEvaluated(boolean evaluated) {this.evaluated = evaluated;}
+    public ArrayList<Exercise> getExercises() {
+        return exercises;
+    }
 
-    public void setCriteria(String criteria) {this.criteria = criteria;}
+    public double getCriteriaValue() {
+        return criteriaValue;
+    }
 
-    public void setPassed(boolean passed){this.passed = passed;}
+    public String getCriteria() {
+        return criteria;
+    }
 
-    public void setCriteriaValue(double criteriaValue) {this.criteriaValue = criteriaValue;}
+    public String getEvaluationType() {
+        return evaluationType;
+    }
 
-    public void setEvaluationType(String evaluationType) {this.evaluationType = evaluationType;}
+    public boolean isPassed() {
+        return passed;
+    }
+
+    public boolean isEvaluated() {
+        return this.evaluated;
+    }
+
+    public void addExercise(Exercise exercise) {
+        exercises.add(exercise);
+    }
+
+    public void setEvaluated(boolean evaluated) {
+        this.evaluated = evaluated;
+    }
+
+    public void setCriteria(String criteria) {
+        this.criteria = criteria;
+    }
+
+    public void setPassed(boolean passed) {
+        this.passed = passed;
+    }
+
+    public void setCriteriaValue(double criteriaValue) {
+        this.criteriaValue = criteriaValue;
+    }
+
+    public void setEvaluationType(String evaluationType) {
+        this.evaluationType = evaluationType;
+    }
 
     // grading calculations
 
@@ -63,9 +103,9 @@ public abstract class Evaluation extends Entity {
 
     public double getMax() {
         double max = 0;
-        for (Exercise exercise : exercises){
+        for (Exercise exercise : exercises) {
             double grade = exercise.getGrade();
-            if (grade > max){
+            if (grade > max) {
                 max = grade;
             }
         }
@@ -74,16 +114,17 @@ public abstract class Evaluation extends Entity {
 
     public double getMin() {
         double min = 10;
-        for (Exercise exercise : exercises){
+        for (Exercise exercise : exercises) {
             double grade = exercise.getGrade();
-            if (grade < min){
+            if (grade < min) {
                 min = grade;
             }
         }
         return min;
     }
 
-    public abstract double getRelevantGrade();
+    // returns the relevant grade
+    public abstract double getGrade();
 
     @Override
     public boolean equals(Object obj) {
@@ -105,18 +146,5 @@ public abstract class Evaluation extends Entity {
     @Override
     public String classString() {
         return "Evaluation";
-    }
-
-    // PRINTERS ( they return a String[] with the data of the evaluation, ordered as expected)
-//todo new class to handle formating (the following methods) Formater
-    public String[] getSecondTaskPrintData(){
-        //Subject_Name,Evaluation_Name,Student_Name,Grade (rounded to 1 decimal place)
-        return new String[]{this.subject.getName(), this.evaluationName, this.student.getName(), String.format("%.1f", getAverage())};
-    }
-    public String[] getThirdTaskPrintData() {
-        // Evaluation_Name,Student_Name,Evaluation_Type,Criteria,Criteria_Value,Grade,Passed,Min,Max,Average,Subject_Name
-        return new String[]{this.evaluationName, this.student.getName(), this.evaluationType,
-                this.criteria, String.valueOf(getRelevantGrade()), String.valueOf(this.criteriaValue), String.valueOf(this.passed),
-                String.format("%.1f", getMin()), String.format("%.1f", getMax()),String.format("%.1f", getAverage()), this.subject.getName()};
     }
 }

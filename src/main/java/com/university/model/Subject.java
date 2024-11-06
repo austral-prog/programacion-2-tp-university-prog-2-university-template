@@ -1,6 +1,7 @@
 package com.university.model;
 
 import java.util.HashSet;
+import java.util.Map;
 
 public class Subject extends Entity  {
     // Classroom,Subject,Student_Name,Student_Email,Subject_Teacher

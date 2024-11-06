@@ -12,10 +12,10 @@ public class DataReciver {
                                       String studentEmail, String subjectTeacher){
         // instance or get model objects
 
-        Teacher teacher = newTeacher(subjectTeacher);
-        Student student = newStudent(studentName);
-        Classroom classroom = newClassroom(classroomID);
-        Subject subject = newSubject(subjectName);
+        Teacher teacher = createOrFetchTeacher(subjectTeacher);
+        Student student = createOrFetchStudent(studentName);
+        Classroom classroom = createOrFetchClassroom(classroomID);
+        Subject subject = createOrFetchSubject(subjectName);
 
         // associate possible links between objects
 
@@ -39,10 +39,10 @@ public class DataReciver {
     public static void secondDataPoint(String studentName, String subjectName, String evaluationType,
                                        String evaluationName, String exerciseName, String grade){
 
-        Student student = newStudent(studentName);
-        Subject subject = newSubject(subjectName);
-        Evaluation evaluation = newEvaluation(evaluationName, subjectName, studentName, evaluationType);
-        Exercise exercise = newExercise(exerciseName, Double.parseDouble(grade), evaluation);
+        Student student = createOrFetchStudent(studentName);
+        Subject subject = createOrFetchSubject(subjectName);
+        Evaluation evaluation = createOrFetchEvaluation(evaluationName, subjectName, studentName, evaluationType);
+        Exercise exercise = createOrFetchExercise(exerciseName, Double.parseDouble(grade), evaluation);
 
         student.addSubject(subject);
 
@@ -61,7 +61,7 @@ public class DataReciver {
                 String evaluationName = thirdInputLine[k];
                 String subjectName = thirdInputLine[0];
 
-                if (evaluationName.equals(evaluation.getEvaluationName())
+                if (evaluationName.equals(evaluation.getName())
                         && subjectName.equals(evaluation.getSubject())) { // evaluation match condition
                     CriteriaSorter.evaluate(evaluation, thirdInputLine[1], thirdInputLine[2]);
                 }

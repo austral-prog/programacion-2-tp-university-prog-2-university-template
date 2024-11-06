@@ -24,18 +24,20 @@ public class EntityManager implements CRUDRepository<Entity> {
     public static ArrayList<Teacher> teachers = new ArrayList<>();
     public static ArrayList<Classroom> classes = new ArrayList<>();
 
-    // Alternative ID method (mas prolijo):
+    /* Alternative ID method (mas prolijo):
 
-    // private int newId() {
-    //     return entities.size() + 1;
-    // }
+    private int newId() {
+    return entities.size() + 1;
+    }
 
-    // Map<Int; uniqueID, Entity; Entity>
+    */
+
+    // Registers an entity in the entities map
     public static void registerEntity(Entity entity) {
         entities.put(entity.getId(), entity);
     }
 
-    // generates a unique ID for each entity
+    // generates a new unique ID for an entity
     public static int newId() {
         int newId = (int) (Math.random() * 100000000);
         while (entities.containsKey(newId)) {
@@ -44,7 +46,7 @@ public class EntityManager implements CRUDRepository<Entity> {
         return newId;
     }
 
-    public static Student newStudent(String studentName) {
+    public static Student createOrFetchStudent(String studentName) {
 
         for (Student student : students) {
             if (student.getName().equals(studentName)) {
@@ -60,34 +62,24 @@ public class EntityManager implements CRUDRepository<Entity> {
 
     }
 
-    public static Evaluation newEvaluation(String evaluationName, String subjectName, String studentName, String evaluationType) {
+    // Create or fetch methods
+
+    public static Evaluation createOrFetchEvaluation(String evaluationName, String subjectName, String studentName, String evaluationType) {
 
         for (Evaluation evaluation : evaluations) {
-            if (evaluation.getName().equals(evaluationName) && evaluation.getSubject().equals(subjectName) && evaluation.getStudentName().equals(studentName)) {
+            if (evaluation.getName().equals(evaluationName) && evaluation.getSubject().getName().equals(subjectName) && evaluation.getStudentName().equals(studentName)) {
                 return evaluation;
             }
         }
 
-        Subject subject = null;
-        boolean subjectFound = false;
-
-        for (Subject searchSubject : subjects) {
-            if (searchSubject.getName().equals(subjectName)) {
-                subject = searchSubject;
-                subjectFound = true;
-                break;
-            }
-        }
-
-        if(!subjectFound) {
-            subject = newSubject(subjectName);
-        }
+        Subject subject = createOrFetchSubject(subjectName);
+        Student student = createOrFetchStudent(studentName);
 
         Evaluation newEvaluation = switch (evaluationType) {
-            case "WRITTEN_EXAM" -> new WrittenExam(evaluationName, subject, studentName);
-            case "PRACTICAL_WORK" ->  new PracticalWork(evaluationName, subject, studentName);
-            case "FINAL_PRACTICAL_WORK" -> new FinalPracticalWork(evaluationName, subject, studentName);
-            case "ORAL_EXAM" -> new OralExam(evaluationName, subject, studentName);
+            case "WRITTEN_EXAM" -> new WrittenExam(evaluationName, subject, student);
+            case "PRACTICAL_WORK" ->  new PracticalWork(evaluationName, subject, student);
+            case "FINAL_PRACTICAL_WORK" -> new FinalPracticalWork(evaluationName, subject, student);
+            case "ORAL_EXAM" -> new OralExam(evaluationName, subject, student);
             default -> throw new IllegalStateException("Unexpected value: " + evaluationType);
         };
 
@@ -97,7 +89,7 @@ public class EntityManager implements CRUDRepository<Entity> {
         return newEvaluation;
     }
 
-    public static Exercise newExercise(String name, double grade, Evaluation evaluation) {
+    public static Exercise createOrFetchExercise(String name, double grade, Evaluation evaluation) {
 
         for (Exercise exercise : exercises) {
             if (exercise.getName().equals(name) && exercise.getGrade() == grade && exercise.getEvaluation().equals(evaluation)) {
@@ -112,7 +104,7 @@ public class EntityManager implements CRUDRepository<Entity> {
         return newExercise;
     }
 
-    public static Subject newSubject(String subjectName) {
+    public static Subject createOrFetchSubject(String subjectName) {
 
         for (Subject subject : subjects) {
             if (subject.getName().equals(subjectName)) {
@@ -127,7 +119,7 @@ public class EntityManager implements CRUDRepository<Entity> {
         return newSubject;
     }
 
-    public static Teacher newTeacher(String teacherName) {
+    public static Teacher createOrFetchTeacher(String teacherName) {
 
         for (Teacher teacher : teachers) {
             if (teacher.getName().equals(teacherName)) {
@@ -142,7 +134,7 @@ public class EntityManager implements CRUDRepository<Entity> {
         return newTeacher;
     }
 
-    public static Classroom newClassroom(String classroomId) {
+    public static Classroom createOrFetchClassroom(String classroomId) {
 
         for (Classroom classroom : classes) {
             if (classroom.getClassroomId() == Integer.parseInt(classroomId)) {
@@ -156,6 +148,8 @@ public class EntityManager implements CRUDRepository<Entity> {
         registerEntity(newClassroom);
         return newClassroom;
     }
+
+    // Remove methods
 
     private void removeClassroom(Classroom classroom) {
         for (Teacher teacher : classroom.getTeachers()) {
@@ -196,16 +190,44 @@ public class EntityManager implements CRUDRepository<Entity> {
         subjects.remove(subject);
         entities.remove(subject.getId());
     }
-
+// todo deleters
     private void removeExercise(Exercise exercise) {
-
+        exercise.getEvaluation().getExercises().remove(exercise);
+        entities.remove(exercise.getId());
+        exercises.remove(exercise);
     }
 
     private void removeEvaluation(Evaluation evaluation) {
-
+        for (Exercise exercise : evaluation.getExercises()) {
+            removeExercise(exercise);
+        }
+        evaluation.getExercises();
+        evaluation.getSubject().getStudents().remove(evaluation.getStudent());
+        evaluations.remove(evaluation);
+        entities.remove(evaluation.getId());
     }
 
     private void removeStudent(Student student) {
+        for (Evaluation evaluation : evaluations) {
+            if (evaluation.getStudent().equals(student)) {
+                removeEvaluation(evaluation);
+            }
+        }
+
+        for (Classroom classroom : classes) {
+            classroom.getStudents().remove(student);
+        }
+
+        for (Subject subject : subjects) {
+            subject.getStudents().remove(student);
+        }
+
+        for (Teacher teacher : teachers) {
+            teacher.getStudents().remove(student);
+        }
+
+        students.remove(student);
+        entities.remove(student.getId());
     }
 
     @Override
@@ -223,7 +245,6 @@ public class EntityManager implements CRUDRepository<Entity> {
         entity.setId(id);
         entities.put(id, entity);
     }
-    //todo delete method
 
     @Override
     public void delete(int id) {
@@ -251,7 +272,7 @@ public class EntityManager implements CRUDRepository<Entity> {
     }
 
     @Override
-    public Class getEntityClass() {
+    public Class<Entity> getEntityClass() {
         return Entity.class;
     }
 }

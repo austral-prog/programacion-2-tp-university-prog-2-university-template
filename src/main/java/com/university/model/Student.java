@@ -21,6 +21,10 @@ public class Student extends Entity  {
         return email;
     }
 
+    public HashSet<Subject> getSubjects() {
+        return subjects;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -31,10 +35,6 @@ public class Student extends Entity  {
 
     public int getSubjectAmount() {
         return subjects.size();
-    }
-
-    public String[] getFirstTaskPrintData() {
-        return new String[]{this.getName(), String.valueOf(this.getSubjectAmount())};
     }
 
     @Override
@@ -55,10 +55,4 @@ public class Student extends Entity  {
     public String classString() {
         return "Student";
     }
-
-    /*  // Unused code
-        public HashSet<Subject> getSubjects() {
-        return subjects;
-    }
-     */
 }

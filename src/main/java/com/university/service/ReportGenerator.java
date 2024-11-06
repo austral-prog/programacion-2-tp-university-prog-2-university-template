@@ -20,7 +20,7 @@ public class ReportGenerator {
         // cada par de datos tiene nombre y cantidad de cursos, como indica el haeader.
         ArrayList<Student> students = EntityManager.students;
         for (Student student : students) {
-            outputData.add(student.getFirstTaskPrintData());
+            outputData.add(Formater.format(student, "first"));
         }
         // se ordena en orden aflabetico, compara el elemento 0 de los arreglos de la lista
         outputData.sort(Comparator.comparing(array -> array[0]));
@@ -39,7 +39,7 @@ public class ReportGenerator {
 
         List<String[]> output = new ArrayList<>();
         for (Evaluation evaluation : evaluations) {
-            String[] line = evaluation.getSecondTaskPrintData();
+            String[] line = Formater.format(evaluation, "second");
             output.add(line);
         }
 
@@ -62,10 +62,15 @@ public class ReportGenerator {
         List<String[]> outputData = new ArrayList<>();
 
         for (Evaluation evaluation : evaluations) {
-            outputData.add(evaluation.getThirdTaskPrintData());
+            String[] line = Formater.format(evaluation, "third");
+            outputData.add(line);
         }
-
-        String[] header = {"Evaluation_Name","Student_Name","Evaluation_Type","Criteria","Criteria_Value","Grade","Passed","Min","Max","Average","Subject_Name"};
+        /*
+        {eval.getName(), String.format("%.1f", eval.getGrade())
+                    , eval.getEvaluationType(), eval.getCriteria(), String.format("%.1f", eval.getCriteriaValue())
+                    , eval.isPassed() ? "Passed" : "Failed"}
+         */
+        String[] header = {"Evaluation_Name","Relevant_Grade","Evaluation_Type","Criteria","Criteria_Value","Passed/Failed"};
         outputData.addFirst(header);
 
         return outputData;
