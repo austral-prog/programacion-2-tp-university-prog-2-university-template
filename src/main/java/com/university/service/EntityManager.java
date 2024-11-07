@@ -6,6 +6,7 @@ import com.university.model.Evaluations.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 // This class is responsible for managing the entities of the system,
@@ -13,9 +14,11 @@ import java.util.Map;
 // and store them in collections for easy access. Each entity has a unique ID.
 
 
-public class EntityManager implements CRUDRepository<Entity> {
+public class EntityManager<E extends Entity> implements CRUDRepository<Entity> {
 
-    public static Map<Integer, Entity> entities = new HashMap<>();
+    public static Map<Integer, Entity> globalEntities = new HashMap<>();
+
+    private HashSet<E> entities = new HashSet<>();
 
     public static ArrayList<Student> students = new ArrayList<>();
     public static ArrayList<Evaluation> evaluations = new ArrayList<>();
@@ -24,27 +27,19 @@ public class EntityManager implements CRUDRepository<Entity> {
     public static ArrayList<Teacher> teachers = new ArrayList<>();
     public static ArrayList<Classroom> classes = new ArrayList<>();
 
-    /* Alternative ID method (mas prolijo):
-
-    private int newId() {
-    return entities.size() + 1;
-    }
-
-    */
-
     // Registers an entity in the entities map
     public static void registerEntity(Entity entity) {
-        entities.put(entity.getId(), entity);
+        globalEntities.put(entity.getId(), entity);
     }
 
     // generates a new unique ID for an entity
     public static int newId() {
-        int newId = (int) (Math.random() * 100000000);
-        while (entities.containsKey(newId)) {
-            newId = (int) (Math.random() * 100000000);
-        }
-        return newId;
+        return globalEntities.size() + 1;
     }
+
+    // Create or fetch methods
+
+
 
     public static Student createOrFetchStudent(String studentName) {
 
@@ -160,7 +155,7 @@ public class EntityManager implements CRUDRepository<Entity> {
         }
         classroom.getStudents().clear();
         classes.remove(classroom);
-        entities.remove(classroom.getId());
+        globalEntities.remove(classroom.getId());
     }
 
     private void removeTeacher(Teacher teacher) {
@@ -173,7 +168,7 @@ public class EntityManager implements CRUDRepository<Entity> {
         }
 
         teachers.remove(teacher);
-        entities.remove(teacher.getId());
+        globalEntities.remove(teacher.getId());
     }
 
     private void removeSubject(Subject subject) {
@@ -188,12 +183,12 @@ public class EntityManager implements CRUDRepository<Entity> {
 
         subject.getStudents().clear();
         subjects.remove(subject);
-        entities.remove(subject.getId());
+        globalEntities.remove(subject.getId());
     }
 // todo deleters
     private void removeExercise(Exercise exercise) {
         exercise.getEvaluation().getExercises().remove(exercise);
-        entities.remove(exercise.getId());
+        globalEntities.remove(exercise.getId());
         exercises.remove(exercise);
     }
 
@@ -204,7 +199,7 @@ public class EntityManager implements CRUDRepository<Entity> {
         evaluation.getExercises();
         evaluation.getSubject().getStudents().remove(evaluation.getStudent());
         evaluations.remove(evaluation);
-        entities.remove(evaluation.getId());
+        globalEntities.remove(evaluation.getId());
     }
 
     private void removeStudent(Student student) {
@@ -227,7 +222,7 @@ public class EntityManager implements CRUDRepository<Entity> {
         }
 
         students.remove(student);
-        entities.remove(student.getId());
+        globalEntities.remove(student.getId());
     }
 
     @Override
@@ -237,18 +232,18 @@ public class EntityManager implements CRUDRepository<Entity> {
 
     @Override
     public Entity read(int id) {
-        return entities.get(id);
+        return globalEntities.get(id);
     }
 
     @Override
     public void update(int id, Entity entity) {
         entity.setId(id);
-        entities.put(id, entity);
+        globalEntities.put(id, entity);
     }
 
     @Override
     public void delete(int id) {
-        Entity entity = entities.get(id);
+        Entity entity = globalEntities.get(id);
         switch (entity.classString()) {
             case "Student" ->
                     removeStudent((Student) entity);

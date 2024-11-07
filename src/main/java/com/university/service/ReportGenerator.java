@@ -65,11 +65,7 @@ public class ReportGenerator {
             String[] line = Formater.format(evaluation, "third");
             outputData.add(line);
         }
-        /*
-        {eval.getName(), String.format("%.1f", eval.getGrade())
-                    , eval.getEvaluationType(), eval.getCriteria(), String.format("%.1f", eval.getCriteriaValue())
-                    , eval.isPassed() ? "Passed" : "Failed"}
-         */
+
         String[] header = {"Evaluation_Name","Relevant_Grade","Evaluation_Type","Criteria","Criteria_Value","Passed/Failed"};
         outputData.addFirst(header);
 

@@ -19,7 +19,7 @@ public class Formater {
                 if (entity.classString().equals("Evaluation")) {
                     Evaluation eval = (Evaluation) entity;
                     return new String[]{eval.getSubject().getName(), eval.getName(),
-                            eval.getStudentName(), String.format("%.1f", eval.getAverage())};
+                            eval.getStudentName(), String.format("%.1f", eval.getGrade())};
 
                 } else {throw new IllegalArgumentException("Invalid entity type");}
 
