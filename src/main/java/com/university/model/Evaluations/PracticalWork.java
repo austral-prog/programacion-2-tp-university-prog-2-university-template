@@ -4,9 +4,8 @@ import com.university.model.Student;
 import com.university.model.Subject;
 
 public class PracticalWork extends Evaluation {
-    public PracticalWork(String evaluationName, Subject subject, Student studentName) {
-        super(evaluationName, subject, studentName);
-        this.setEvaluationType("PRACTICAL_WORK");
+    public PracticalWork(String evaluationName, Subject subject, Student studentName, String evaluationType) {
+        super(evaluationName, subject, studentName, evaluationType);
     }
 
     @Override

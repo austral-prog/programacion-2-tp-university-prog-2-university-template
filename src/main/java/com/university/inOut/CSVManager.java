@@ -30,7 +30,7 @@ public class CSVManager {
     }
 
     // Toma un archivo CSV y escribe cada elemento de la lista como una línea, tomando cada dato del array
-    // de strings y separandolos con una coma
+    // de strings y separándolos con una coma
 
     public void write(String filePath, List<String[]> writeData) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {

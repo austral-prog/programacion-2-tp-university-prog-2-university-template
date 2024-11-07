@@ -62,7 +62,7 @@ public class EntityManager<E extends Entity> implements CRUDRepository<Entity> {
     public static Evaluation createOrFetchEvaluation(String evaluationName, String subjectName, String studentName, String evaluationType) {
 
         for (Evaluation evaluation : evaluations) {
-            if (evaluation.getName().equals(evaluationName) && evaluation.getSubject().getName().equals(subjectName) && evaluation.getStudentName().equals(studentName)) {
+            if (evaluation.getName().equals(evaluationName) && evaluation.getSubject().getName().equals(subjectName) && evaluation.studentName().equals(studentName)) {
                 return evaluation;
             }
         }
@@ -71,10 +71,10 @@ public class EntityManager<E extends Entity> implements CRUDRepository<Entity> {
         Student student = createOrFetchStudent(studentName);
 
         Evaluation newEvaluation = switch (evaluationType) {
-            case "WRITTEN_EXAM" -> new WrittenExam(evaluationName, subject, student);
-            case "PRACTICAL_WORK" ->  new PracticalWork(evaluationName, subject, student);
-            case "FINAL_PRACTICAL_WORK" -> new FinalPracticalWork(evaluationName, subject, student);
-            case "ORAL_EXAM" -> new OralExam(evaluationName, subject, student);
+            case "WRITTEN_EXAM" -> new WrittenExam(evaluationName, subject, student, evaluationType);
+            case "PRACTICAL_WORK" ->  new PracticalWork(evaluationName, subject, student, evaluationType);
+            case "FINAL_PRACTICAL_WORK" -> new FinalPracticalWork(evaluationName, subject, student, evaluationType);
+            case "ORAL_EXAM" -> new OralExam(evaluationName, subject, student, evaluationType);
             default -> throw new IllegalStateException("Unexpected value: " + evaluationType);
         };
 

@@ -10,42 +10,58 @@ import java.util.Objects;
 
 public abstract class Evaluation extends Entity {
 
-    final ArrayList<Exercise> exercises;
-    private final String evaluationName;
+    private final String name;
+    private final String evaluationType;
     private final Subject subject;
     private final Student student;
-    private String evaluationType;
+    final ArrayList<Exercise> exercises;
+
+    // grading variables
+
     private boolean passed;
     boolean evaluated = false;
     private String criteria;
     private double criteriaValue;
 
-    protected Evaluation(String evaluationName, Subject subject, Student student) {
+    protected Evaluation(String evaluationName, Subject subject, Student student, String evaluationType) {
         this.exercises = new ArrayList<>();
-        this.evaluationName = evaluationName;
+        this.name = evaluationName;
         this.subject = subject;
         this.student = student;
+        this.evaluationType = evaluationType;
     }
+
+    // getters for the "main" and final variables
 
     public String getName() {
-        return evaluationName;
+        return name;
     }
 
-    public String getStudentName() {
-        return this.student.getName();
-    }
-
-    public Student getStudent() {
-        return student;
+    public String getEvaluationType() {
+        return evaluationType;
     }
 
     public Subject getSubject() {
         return subject;
     }
 
+    public Student getStudent() {
+        return student;
+    }
+
+    public String studentName() {
+        return this.student.getName();
+    } // convenience method
+
     public ArrayList<Exercise> getExercises() {
         return exercises;
     }
+
+    public void addExercise(Exercise exercise) {
+        exercises.add(exercise);
+    }
+
+    // g&s for the grading variables
 
     public double getCriteriaValue() {
         return criteriaValue;
@@ -53,10 +69,6 @@ public abstract class Evaluation extends Entity {
 
     public String getCriteria() {
         return criteria;
-    }
-
-    public String getEvaluationType() {
-        return evaluationType;
     }
 
     public boolean isPassed() {
@@ -67,9 +79,7 @@ public abstract class Evaluation extends Entity {
         return this.evaluated;
     }
 
-    public void addExercise(Exercise exercise) {
-        exercises.add(exercise);
-    }
+
 
     public void setEvaluated(boolean evaluated) {
         this.evaluated = evaluated;
@@ -87,9 +97,7 @@ public abstract class Evaluation extends Entity {
         this.criteriaValue = criteriaValue;
     }
 
-    public void setEvaluationType(String evaluationType) {
-        this.evaluationType = evaluationType;
-    }
+
 
     // grading calculations
 
@@ -129,9 +137,9 @@ public abstract class Evaluation extends Entity {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (obj == null || getClass() != obj.getClass() ) return false;
         Evaluation evaluation = (Evaluation) obj;
-        return evaluationName.equals(evaluation.evaluationName)
+        return name.equals(evaluation.name)
                 && subject.equals(evaluation.subject)
                 && student.equals(evaluation.student)
                 && evaluationType.equals(evaluation.evaluationType)
@@ -140,7 +148,7 @@ public abstract class Evaluation extends Entity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(evaluationName, subject, student, evaluationType, getId());
+        return Objects.hash(name, subject, student, evaluationType, getId());
     }
 
     @Override
