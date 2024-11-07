@@ -8,8 +8,6 @@ public class MinAboveValue implements CriteriaApplier {
         evaluation.setEvaluated(true);
         evaluation.setCriteria(criteria);
         evaluation.setCriteriaValue(value);
-        if (evaluation.getMin() > value) {
-            evaluation.setPassed(true);
-        }
+        evaluation.setPassed(evaluation.getMin() > value);
     }
 }

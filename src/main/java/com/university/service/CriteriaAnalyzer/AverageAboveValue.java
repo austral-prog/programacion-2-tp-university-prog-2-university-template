@@ -9,8 +9,6 @@ public class AverageAboveValue implements CriteriaApplier {
         evaluation.setEvaluated(true);
         evaluation.setCriteria(criteria);
         evaluation.setCriteriaValue(value);
-        if (evaluation.getAverage() > value) {
-            evaluation.setPassed(true);
-        }
+        evaluation.setPassed(evaluation.getAverage() > value);
     }
 }

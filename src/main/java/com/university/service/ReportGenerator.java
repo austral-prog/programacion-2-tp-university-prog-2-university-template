@@ -13,7 +13,7 @@ public class ReportGenerator {
     public List<String[]> firstReport(List<String[]> inputData) {
         // se recorre el csv y se agregan todos los estudiantes con sus cursos
         for (String[] strings : inputData) {
-            DataReciver.firstDataPoint(strings[0], strings[1], strings[2], strings[3], strings[4]);
+            DataReceiver.firstDataPoint(strings[0], strings[1], strings[2], strings[3], strings[4]);
         }
         List<String[]> outputData = new ArrayList<>();
         // se recorre la lista de estudiantes y se construye un arreglo para cada elemento de la lista
@@ -32,7 +32,7 @@ public class ReportGenerator {
     public List<String[]> secondReport(List<String[]> inputData) {
 
         for (String[] strings : inputData) {
-            DataReciver.secondDataPoint(strings[0], strings[1], strings[2], strings[3], strings[4], strings[5]);
+            DataReceiver.secondDataPoint(strings[0], strings[1], strings[2], strings[3], strings[4], strings[5]);
         }
 
         ArrayList<Evaluation> evaluations = EntityManager.evaluations;
@@ -56,7 +56,7 @@ public class ReportGenerator {
 
         List<Evaluation>  evaluations = EntityManager.evaluations;
         for (String[] thirdInputLine : input_3csv) {
-            DataReciver.thirdDataPoint(thirdInputLine);
+            DataReceiver.thirdDataPoint(thirdInputLine);
         }
 
         List<String[]> outputData = new ArrayList<>();

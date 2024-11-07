@@ -13,10 +13,13 @@ import java.util.Map;
 // it provides methods to create new instances of these entities, ensure they are unique,
 // and store them in collections for easy access. Each entity has a unique ID.
 
+//todo: implement CRUDRepository<Entity> interface
+//todo: errase old structure and finish implementation of new structure
 
 public class EntityManager<E extends Entity> implements CRUDRepository<Entity> {
 
-    public static Map<Integer, Entity> globalEntities = new HashMap<>();
+    public static Map<Integer, Entity> MapIdEntities = new HashMap<>();
+    public static HashSet<Entity> globalEntities = new HashSet<>();
 
     private HashSet<E> entities = new HashSet<>();
 
@@ -27,17 +30,27 @@ public class EntityManager<E extends Entity> implements CRUDRepository<Entity> {
     public static ArrayList<Teacher> teachers = new ArrayList<>();
     public static ArrayList<Classroom> classes = new ArrayList<>();
 
-    // Registers an entity in the entities map
-    public static void registerEntity(Entity entity) {
-        globalEntities.put(entity.getId(), entity);
+    // Registers an entity
+
+    public void registerEntity(E entity) {
+        entity.setId(newId());
+        globalEntities.add(entity);
+        MapIdEntities.put(entity.getId(), entity);
+        entities.add(entity);
     }
 
     // generates a new unique ID for an entity
     public static int newId() {
-        return globalEntities.size() + 1;
+        return MapIdEntities.size() + 1;
     }
 
     // Create or fetch methods
+
+    public E createOrFetchEntity(E entity) {
+
+        registerEntity(entity);
+        return entity;
+    }
 
 
 
@@ -155,7 +168,7 @@ public class EntityManager<E extends Entity> implements CRUDRepository<Entity> {
         }
         classroom.getStudents().clear();
         classes.remove(classroom);
-        globalEntities.remove(classroom.getId());
+        MapIdEntities.remove(classroom.getId());
     }
 
     private void removeTeacher(Teacher teacher) {
@@ -168,7 +181,7 @@ public class EntityManager<E extends Entity> implements CRUDRepository<Entity> {
         }
 
         teachers.remove(teacher);
-        globalEntities.remove(teacher.getId());
+        MapIdEntities.remove(teacher.getId());
     }
 
     private void removeSubject(Subject subject) {
@@ -183,12 +196,12 @@ public class EntityManager<E extends Entity> implements CRUDRepository<Entity> {
 
         subject.getStudents().clear();
         subjects.remove(subject);
-        globalEntities.remove(subject.getId());
+        MapIdEntities.remove(subject.getId());
     }
 // todo deleters
     private void removeExercise(Exercise exercise) {
         exercise.getEvaluation().getExercises().remove(exercise);
-        globalEntities.remove(exercise.getId());
+        MapIdEntities.remove(exercise.getId());
         exercises.remove(exercise);
     }
 
@@ -199,7 +212,7 @@ public class EntityManager<E extends Entity> implements CRUDRepository<Entity> {
         evaluation.getExercises();
         evaluation.getSubject().getStudents().remove(evaluation.getStudent());
         evaluations.remove(evaluation);
-        globalEntities.remove(evaluation.getId());
+        MapIdEntities.remove(evaluation.getId());
     }
 
     private void removeStudent(Student student) {
@@ -222,7 +235,7 @@ public class EntityManager<E extends Entity> implements CRUDRepository<Entity> {
         }
 
         students.remove(student);
-        globalEntities.remove(student.getId());
+        MapIdEntities.remove(student.getId());
     }
 
     @Override
@@ -232,18 +245,18 @@ public class EntityManager<E extends Entity> implements CRUDRepository<Entity> {
 
     @Override
     public Entity read(int id) {
-        return globalEntities.get(id);
+        return MapIdEntities.get(id);
     }
 
     @Override
     public void update(int id, Entity entity) {
         entity.setId(id);
-        globalEntities.put(id, entity);
+        MapIdEntities.put(id, entity);
     }
 
     @Override
     public void delete(int id) {
-        Entity entity = globalEntities.get(id);
+        Entity entity = MapIdEntities.get(id);
         switch (entity.classString()) {
             case "Student" ->
                     removeStudent((Student) entity);

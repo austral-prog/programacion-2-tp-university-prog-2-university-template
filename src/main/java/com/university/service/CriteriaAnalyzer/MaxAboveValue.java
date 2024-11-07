@@ -8,8 +8,6 @@ public class MaxAboveValue implements CriteriaApplier {
         evaluation.setEvaluated(true);
         evaluation.setCriteria(criteria);
         evaluation.setCriteriaValue(value);
-        if (evaluation.getMax() > value) {
-            evaluation.setPassed(true);
-        }
+        evaluation.setPassed(evaluation.getMax() > value);
     }
 }
