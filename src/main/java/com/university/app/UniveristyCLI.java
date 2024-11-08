@@ -22,7 +22,6 @@ public class UniveristyCLI implements CLI {
     }
 
     public static void main(String[] args) {
-        // Initialize your repositories here
         CRUDRepository<?>[] crudInterfaces = new CRUDRepository<?>[]{
                 StudentManager, TeacherManager, ClassroomManager, SubjectManager, EvaluationManager, ExerciseManager
         };
