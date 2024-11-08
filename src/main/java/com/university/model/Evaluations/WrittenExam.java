@@ -15,6 +15,6 @@ public class WrittenExam extends Evaluation {
         for (Exercise exercise : exercises) {
             sum += exercise.getGrade();
         }
-        return sum / exercises.size();
+        return (sum / exercises.size());
     }
 }

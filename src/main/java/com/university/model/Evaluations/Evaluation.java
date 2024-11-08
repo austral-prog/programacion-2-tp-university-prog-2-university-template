@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public abstract class Evaluation extends Entity {
 
-    private final String name;
+    private String name;
     private final String evaluationType;
     private final Subject subject;
     private final Student student;
@@ -142,17 +142,24 @@ public abstract class Evaluation extends Entity {
         return name.equals(evaluation.name)
                 && subject.equals(evaluation.subject)
                 && student.equals(evaluation.student)
-                && evaluationType.equals(evaluation.evaluationType)
-                && this.getId() == evaluation.getId();
+                && evaluationType.equals(evaluation.evaluationType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, subject, student, evaluationType, getId());
+        return Objects.hash(name, subject, student, evaluationType);
     }
 
     @Override
     public String classString() {
         return "Evaluation";
+    }
+
+    public void setEvaluationName(String evaluationName) {
+        this.name = evaluationName;
+    }
+
+    public void setEvaluationType(String evaluationType) {
+        this.name = evaluationType;
     }
 }

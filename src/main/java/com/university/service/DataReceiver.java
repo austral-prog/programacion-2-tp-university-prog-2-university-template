@@ -1,10 +1,13 @@
 package com.university.service;
 
+import com.university.inOut.IncompatibleEntity;
 import com.university.model.*;
 import com.university.model.Evaluations.*;
 import com.university.service.CriteriaAnalyzer.CriteriaSorter;
 
-import static com.university.service.EntityManager.*;
+import java.util.HashSet;
+
+import static com.university.service.EntityManager.MapIdEntities;
 
 public class DataReceiver {
 
@@ -29,13 +32,6 @@ public class DataReceiver {
         student = StudentManager.createOrFetchEntity(student);
         classroom = ClassroomManager.createOrFetchEntity(classroom);
         subject = SubjectManager.createOrFetchEntity(subject);
-
-/*
-        Teacher teacher = createOrFetchTeacher(subjectTeacher);
-        Student student = createOrFetchStudent(studentName);
-        Classroom classroom = createOrFetchClassroom(classroomID);
-        Subject subject = createOrFetchSubject(subjectName);
-*/
 
         // associate possible relationships between objects
 
@@ -75,13 +71,6 @@ public class DataReceiver {
         evaluation = EvaluationManager.createOrFetchEntity(evaluation);
         exercise = ExerciseManager.createOrFetchEntity(exercise);
 
-/*
-        Student student = createOrFetchStudent(studentName);
-        Subject subject = createOrFetchSubject(subjectName);
-        Evaluation evaluation = createOrFetchEvaluation(evaluationName, subjectName, studentName, evaluationType);
-        Exercise exercise = createOrFetchExercise(exerciseName, Double.parseDouble(grade), evaluation);
- */
-
         student.addSubject(subject);
 
         subject.addStudent(student);
@@ -90,7 +79,8 @@ public class DataReceiver {
     }
 
     public static void thirdDataPoint(String[] thirdInputLine) {
-//todo adapt to new structure
+
+        HashSet<Evaluation> evaluations = EvaluationManager.entities;
         for (Evaluation evaluation : evaluations) {
             if (evaluation.isEvaluated()) {continue;}
             //thirdInputLine; {Subject_Name,Criteria_Type,Criteria_Value,Evaluation_Name_1, Evaluation_Name_2, ...}
@@ -108,4 +98,55 @@ public class DataReceiver {
         }
     }
 
+    public static void rawExercise(String exerciseName, double grade, int evaluationID){
+        Evaluation evaluation;
+        if (MapIdEntities.get(evaluationID) instanceof Evaluation) {
+            evaluation = (Evaluation) MapIdEntities.get(evaluationID);
+        } else {
+            throw new IncompatibleEntity(MapIdEntities.get(evaluationID) + "is not an instance of Evaluation");
+        }
+        if (evaluation != null) {
+            Exercise exercise = new Exercise(exerciseName, grade, evaluation);
+            ExerciseManager.createOrFetchEntity(exercise);
+        }
+    }
+
+    public static void rawEvaluation(String evaluationName, int subjectID, int studentID, String evaluationType) {
+        // Retrieve Subject and Student by ID using MapIdEntities
+        if (MapIdEntities.get(subjectID) instanceof Subject && MapIdEntities.get(studentID) instanceof Student) {
+            Subject subject = (Subject) MapIdEntities.get(subjectID);
+            Student student = (Student) MapIdEntities.get(studentID);
+            Evaluation evaluation = switch (evaluationType) {
+                case "WRITTEN_EXAM" -> new WrittenExam(evaluationName, subject, student, evaluationType);
+                case "ORAL_EXAM" -> new OralExam(evaluationName, subject, student, evaluationType);
+                case "FINAL_PRACTICAL_WORK" -> new FinalPracticalWork(evaluationName, subject, student, evaluationType);
+                case "PRACTICAL_WORK" -> new PracticalWork(evaluationName, subject, student, evaluationType);
+                default -> throw new IllegalStateException("Unexpected value: " + evaluationType);
+            };
+            EvaluationManager.createOrFetchEntity(evaluation);
+        } else {
+            throw new IncompatibleEntity("Subject or Student ID is not valid");
+        }
+    }
+
+    public static void rawSubject(String subjectName) {
+        Subject subject = new Subject(subjectName);
+        SubjectManager.createOrFetchEntity(subject);
+    }
+
+    public static void rawTeacher(String teacherName) {
+        Teacher teacher = new Teacher(teacherName);
+        TeacherManager.createOrFetchEntity(teacher);
+    }
+
+    public static void rawStudent(String studentName, String studentEmail) {
+        Student student = new Student(studentName);
+        student.setEmail(studentEmail);
+        StudentManager.createOrFetchEntity(student);
+    }
+
+    public static void rawClassroom(int classroomID) {
+        Classroom classroom = new Classroom(classroomID);
+        ClassroomManager.createOrFetchEntity(classroom);
+    }
 }

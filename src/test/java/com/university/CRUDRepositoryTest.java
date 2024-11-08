@@ -8,7 +8,9 @@ import java.util.ServiceLoader;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TestEntity implements Entity {
+import com.university.model.Entity;
+
+class TestEntity extends Entity {
     private int id;
     private String name;
 
@@ -20,6 +22,11 @@ class TestEntity implements Entity {
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public String classString() {
+        return "";
     }
 
     @Override

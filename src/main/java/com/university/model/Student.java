@@ -29,6 +29,10 @@ public class Student extends Entity  {
         this.email = email;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void addSubject(Subject subject) {
         subjects.add(subject);
     }
@@ -42,13 +46,12 @@ public class Student extends Entity  {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Student student = (Student) obj;
-        return name.equals(student.name)
-                && getId() == student.getId();
+        return name.equals(student.name);
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode() + Integer.hashCode(this.getId()) + email.hashCode();
+        return name.hashCode();
     }
 
     @Override

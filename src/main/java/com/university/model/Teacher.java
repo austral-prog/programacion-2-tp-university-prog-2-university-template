@@ -21,6 +21,10 @@ public class Teacher extends Entity  {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public List<Subject> getSubjects() {
         return subjects;
     }
@@ -46,7 +50,21 @@ public class Teacher extends Entity  {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Teacher teacher) {
+            return this.name.equals(teacher.name);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
     public String classString() {
         return "Teacher";
     }
+
 }

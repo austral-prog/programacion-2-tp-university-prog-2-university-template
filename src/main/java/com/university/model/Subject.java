@@ -1,7 +1,6 @@
 package com.university.model;
 
 import java.util.HashSet;
-import java.util.Map;
 
 public class Subject extends Entity  {
     // Classroom,Subject,Student_Name,Student_Email,Subject_Teacher
@@ -31,6 +30,10 @@ public class Subject extends Entity  {
         classrooms.add(classroom);
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public HashSet<Student> getStudents() {
         return students;
     }
@@ -45,6 +48,23 @@ public class Subject extends Entity  {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Subject subject = (Subject) obj;
+        return name.equals(subject.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 
     @Override

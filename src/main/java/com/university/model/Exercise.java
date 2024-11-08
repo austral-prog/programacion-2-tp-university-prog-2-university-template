@@ -16,6 +16,11 @@ public class Exercise extends Entity {
     public String getName() {
         return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public double getGrade() {
         return grade;
     }
@@ -24,7 +29,26 @@ public class Exercise extends Entity {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Exercise exercise = (Exercise) obj;
+        return name.equals(exercise.name)
+                && grade == exercise.grade
+                && evaluation.equals(exercise.evaluation);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode() + Double.hashCode(grade) + evaluation.hashCode();
+    }
+
+    @Override
     public String classString() {
         return "Exercise";
+    }
+
+    public void setGrade(double grade) {
+        this.grade = grade;
     }
 }

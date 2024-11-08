@@ -1,10 +1,9 @@
 package com.university.service;
 
 import com.university.CRUDRepository;
+import com.university.inOut.IncompatibleEntity;
 import com.university.model.*;
-import com.university.model.Evaluations.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,22 +12,18 @@ import java.util.Map;
 // it provides methods to create new instances of these entities, ensure they are unique,
 // and store them in collections for easy access. Each entity has a unique ID.
 
-//todo: implement CRUDRepository<Entity> interface
-//todo: errase old structure and finish implementation of new structure
+public class EntityManager<E extends Entity> implements CRUDRepository<E> {
 
-public class EntityManager<E extends Entity> implements CRUDRepository<Entity> {
+    private final Class<E> entityClass;  // Store the class type of E for type checking
+
+    public EntityManager(Class<E> entityClass) {
+        this.entityClass = entityClass;
+    }
 
     public static Map<Integer, Entity> MapIdEntities = new HashMap<>();
     public static HashSet<Entity> globalEntities = new HashSet<>();
 
-    private HashSet<E> entities = new HashSet<>();
-
-    public static ArrayList<Student> students = new ArrayList<>();
-    public static ArrayList<Evaluation> evaluations = new ArrayList<>();
-    public static ArrayList<Exercise> exercises = new ArrayList<>();
-    public static ArrayList<Subject> subjects = new ArrayList<>();
-    public static ArrayList<Teacher> teachers = new ArrayList<>();
-    public static ArrayList<Classroom> classes = new ArrayList<>();
+    public HashSet<E> entities = new HashSet<>();
 
     // Registers an entity
 
@@ -47,206 +42,31 @@ public class EntityManager<E extends Entity> implements CRUDRepository<Entity> {
     // Create or fetch methods
 
     public E createOrFetchEntity(E entity) {
-
+        if (globalEntities.contains(entity)) {return entity;}
         registerEntity(entity);
         return entity;
     }
 
-
-
-    public static Student createOrFetchStudent(String studentName) {
-
-        for (Student student : students) {
-            if (student.getName().equals(studentName)) {
-                return student;
-            }
-        }
-
-        Student newStudent = new Student(studentName);
-        students.add(newStudent);
-        newStudent.setId(newId());
-        registerEntity(newStudent);
-        return newStudent;
-
-    }
-
-    // Create or fetch methods
-
-    public static Evaluation createOrFetchEvaluation(String evaluationName, String subjectName, String studentName, String evaluationType) {
-
-        for (Evaluation evaluation : evaluations) {
-            if (evaluation.getName().equals(evaluationName) && evaluation.getSubject().getName().equals(subjectName) && evaluation.studentName().equals(studentName)) {
-                return evaluation;
-            }
-        }
-
-        Subject subject = createOrFetchSubject(subjectName);
-        Student student = createOrFetchStudent(studentName);
-
-        Evaluation newEvaluation = switch (evaluationType) {
-            case "WRITTEN_EXAM" -> new WrittenExam(evaluationName, subject, student, evaluationType);
-            case "PRACTICAL_WORK" ->  new PracticalWork(evaluationName, subject, student, evaluationType);
-            case "FINAL_PRACTICAL_WORK" -> new FinalPracticalWork(evaluationName, subject, student, evaluationType);
-            case "ORAL_EXAM" -> new OralExam(evaluationName, subject, student, evaluationType);
-            default -> throw new IllegalStateException("Unexpected value: " + evaluationType);
-        };
-
-        evaluations.add(newEvaluation);
-        newEvaluation.setId(newId());
-        registerEntity(newEvaluation);
-        return newEvaluation;
-    }
-
-    public static Exercise createOrFetchExercise(String name, double grade, Evaluation evaluation) {
-
-        for (Exercise exercise : exercises) {
-            if (exercise.getName().equals(name) && exercise.getGrade() == grade && exercise.getEvaluation().equals(evaluation)) {
-                return exercise;
-            }
-        }
-
-        Exercise newExercise = new Exercise(name, grade, evaluation);
-        exercises.add(newExercise);
-        newExercise.setId(newId());
-        registerEntity(newExercise);
-        return newExercise;
-    }
-
-    public static Subject createOrFetchSubject(String subjectName) {
-
-        for (Subject subject : subjects) {
-            if (subject.getName().equals(subjectName)) {
-                return subject;
-            }
-        }
-
-        Subject newSubject = new Subject(subjectName);
-        subjects.add(newSubject);
-        newSubject.setId(newId());
-        registerEntity(newSubject);
-        return newSubject;
-    }
-
-    public static Teacher createOrFetchTeacher(String teacherName) {
-
-        for (Teacher teacher : teachers) {
-            if (teacher.getName().equals(teacherName)) {
-                return teacher;
-            }
-        }
-
-        Teacher newTeacher = new Teacher(teacherName);
-        teachers.add(newTeacher);
-        newTeacher.setId(newId());
-        registerEntity(newTeacher);
-        return newTeacher;
-    }
-
-    public static Classroom createOrFetchClassroom(String classroomId) {
-
-        for (Classroom classroom : classes) {
-            if (classroom.getClassroomId() == Integer.parseInt(classroomId)) {
-                return classroom;
-            }
-        }
-
-        Classroom newClassroom = new Classroom(Integer.parseInt(classroomId));
-        classes.add(newClassroom);
-        newClassroom.setId(newId());
-        registerEntity(newClassroom);
-        return newClassroom;
-    }
-
-    // Remove methods
-
-    private void removeClassroom(Classroom classroom) {
-        for (Teacher teacher : classroom.getTeachers()) {
-            teacher.getClassrooms().remove(classroom);
-        }
-        for (Subject subject : classroom.getSubjects()) {
-            subject.getClassrooms().remove(classroom);
-        }
-        classroom.getStudents().clear();
-        classes.remove(classroom);
-        MapIdEntities.remove(classroom.getId());
-    }
-
-    private void removeTeacher(Teacher teacher) {
-        for (Classroom classroom : teacher.getClassrooms()) {
-            classroom.getTeachers().remove(teacher);
-        }
-
-        for (Subject subject : teacher.getSubjects()) {
-            subject.getTeachers().remove(teacher);
-        }
-
-        teachers.remove(teacher);
-        MapIdEntities.remove(teacher.getId());
-    }
-
-    private void removeSubject(Subject subject) {
-
-        for (Teacher teacher : subject.getTeachers()) {
-            teacher.getSubjects().remove(subject);
-        }
-
-        for (Classroom classroom : subject.getClassrooms()) {
-            classroom.getSubjects().remove(subject);
-        }
-
-        subject.getStudents().clear();
-        subjects.remove(subject);
-        MapIdEntities.remove(subject.getId());
-    }
-// todo deleters
-    private void removeExercise(Exercise exercise) {
-        exercise.getEvaluation().getExercises().remove(exercise);
-        MapIdEntities.remove(exercise.getId());
-        exercises.remove(exercise);
-    }
-
-    private void removeEvaluation(Evaluation evaluation) {
-        for (Exercise exercise : evaluation.getExercises()) {
-            removeExercise(exercise);
-        }
-        evaluation.getExercises();
-        evaluation.getSubject().getStudents().remove(evaluation.getStudent());
-        evaluations.remove(evaluation);
-        MapIdEntities.remove(evaluation.getId());
-    }
-
-    private void removeStudent(Student student) {
-        for (Evaluation evaluation : evaluations) {
-            if (evaluation.getStudent().equals(student)) {
-                removeEvaluation(evaluation);
-            }
-        }
-
-        for (Classroom classroom : classes) {
-            classroom.getStudents().remove(student);
-        }
-
-        for (Subject subject : subjects) {
-            subject.getStudents().remove(student);
-        }
-
-        for (Teacher teacher : teachers) {
-            teacher.getStudents().remove(student);
-        }
-
-        students.remove(student);
-        MapIdEntities.remove(student.getId());
+    public boolean deleteEntity(E entity) {
+        boolean entityRemoved = Remover.disconnection(entity, this);
+        return entityRemoved;
     }
 
     @Override
-    public void create(Entity entity) {
+    public void create(E entity) {
+        if (globalEntities.contains(entity)) {return;}
         registerEntity(entity);
     }
 
     @Override
-    public Entity read(int id) {
-        return MapIdEntities.get(id);
+    public E read(int id) {
+        Entity entity = MapIdEntities.get(id);
+        if (entityClass.isInstance(entity)) {
+            return entityClass.cast(entity);  // Safe cast using entityClass
+        }
+        throw new IncompatibleEntity("Entity is not of the correct type");
     }
+
 
     @Override
     public void update(int id, Entity entity) {
@@ -257,30 +77,23 @@ public class EntityManager<E extends Entity> implements CRUDRepository<Entity> {
     @Override
     public void delete(int id) {
         Entity entity = MapIdEntities.get(id);
-        switch (entity.classString()) {
-            case "Student" ->
-                    removeStudent((Student) entity);
-            case "Evaluation" ->
-                    removeEvaluation((Evaluation) entity);
-            case "Exercise" ->
-                    removeExercise((Exercise) entity);
-            case "Subject" ->
-                    removeSubject((Subject) entity);
-            case "Teacher" ->
-                    removeTeacher((Teacher) entity);
-            case "Classroom" ->
-                    removeClassroom((Classroom) entity);
+        if (entityClass.isInstance(entity)) {
+            deleteEntity(entityClass.cast(entity));  // Safe cast
         }
-
+        throw new IncompatibleEntity("Entity is not of the correct type");
     }
 
     @Override
     public String getIdentifier() {
-        return "";
+        return entityClass.getSimpleName();
     }
 
     @Override
     public Class<Entity> getEntityClass() {
         return Entity.class;
+    }
+
+    public Map<Integer, Entity> getAllEntities() {
+        return MapIdEntities;
     }
 }

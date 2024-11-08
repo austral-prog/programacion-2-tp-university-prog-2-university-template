@@ -5,6 +5,7 @@ import com.university.model.Evaluations.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -17,12 +18,12 @@ public class ReportGenerator {
         }
         List<String[]> outputData = new ArrayList<>();
         // se recorre la lista de estudiantes y se construye un arreglo para cada elemento de la lista
-        // cada par de datos tiene nombre y cantidad de cursos, como indica el haeader.
-        ArrayList<Student> students = EntityManager.students;
+        // cada par de datos tiene nombre y cantidad de cursos, como indica el header.
+        HashSet<Student> students = ManagerHolder.StudentManager.entities;
         for (Student student : students) {
             outputData.add(Formater.format(student, "first"));
         }
-        // se ordena en orden aflabetico, compara el elemento 0 de los arreglos de la lista
+        // se ordena en orden alphabetic, compara el elemento 0 de los arreglos de la lista
         outputData.sort(Comparator.comparing(array -> array[0]));
         String[] header = {"Student_Name","Course_Count"};
         outputData.addFirst(header);
@@ -35,7 +36,7 @@ public class ReportGenerator {
             DataReceiver.secondDataPoint(strings[0], strings[1], strings[2], strings[3], strings[4], strings[5]);
         }
 
-        ArrayList<Evaluation> evaluations = EntityManager.evaluations;
+        HashSet<Evaluation> evaluations = ManagerHolder.EvaluationManager.entities;
 
         List<String[]> output = new ArrayList<>();
         for (Evaluation evaluation : evaluations) {
@@ -54,7 +55,7 @@ public class ReportGenerator {
     }
     public List<String[]> thirdReport(List<String[]> input_3csv) {
 
-        List<Evaluation>  evaluations = EntityManager.evaluations;
+        HashSet<Evaluation>  evaluations = ManagerHolder.EvaluationManager.entities;
         for (String[] thirdInputLine : input_3csv) {
             DataReceiver.thirdDataPoint(thirdInputLine);
         }
