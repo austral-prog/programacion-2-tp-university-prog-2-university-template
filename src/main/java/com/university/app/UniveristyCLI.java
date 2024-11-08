@@ -3,8 +3,8 @@ package com.university.app;
 import com.university.CLI;
 import com.university.CRUDRepository;
 
+import com.university.inOut.IncompatibleEntity;
 import com.university.model.*;
-import com.university.model.Evaluations.Evaluation;
 import com.university.service.EntityManager;
 import com.university.service.DataReceiver;
 
@@ -22,8 +22,13 @@ public class UniveristyCLI implements CLI {
     }
 
     public static void main(String[] args) {
+
+        App app = new App();
+        app.runTasks();
+
         CRUDRepository<?>[] crudInterfaces = new CRUDRepository<?>[]{
-                StudentManager, TeacherManager, ClassroomManager, SubjectManager, EvaluationManager, ExerciseManager
+                StudentManager, TeacherManager, ClassroomManager,
+                SubjectManager, EvaluationManager, ExerciseManager
         };
         // Run the CLI
         UniveristyCLI universityCLI = new UniveristyCLI();
@@ -71,7 +76,7 @@ public class UniveristyCLI implements CLI {
                     scanner.nextLine(); // Consume newline
                     Entity entity = repository.read(id);
                     if (entity != null) {
-                        System.out.println(entity);
+                        System.out.println(entity.toString());
                     } else {
                         System.out.println("Entity not found.");
                     }
@@ -111,70 +116,87 @@ public class UniveristyCLI implements CLI {
     }
 
     private void createEntity(CRUDRepository<?> repository) {
-        Entity entity = createNewEntity(repository.getEntityClass());
-        if (entity != null) {
-            if (entity instanceof Evaluation) {
-                // Prompt for related entities' IDs
-                System.out.print("Enter Subject ID: ");
-                int subjectID = scanner.nextInt();
-                System.out.print("Enter Student ID: ");
-                int studentID = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
-                // Call the DataReceiver with the data
-                DataReceiver.rawEvaluation(((Evaluation) entity).getName(), subjectID, studentID, ((Evaluation) entity).getEvaluationType());
-            }
-            ((CRUDRepository<Entity>) repository).create(entity);
-            System.out.println("Entity created successfully.");
-        } else {
-            System.out.println("Failed to create entity.");
+        String className = repository.getIdentifier();
+        switch (className) {
+            case "Student" -> createStudent(repository);
+            case "Subject" -> createSubject(repository);
+            case "Teacher" -> createTeacher(repository);
+            case "Evaluation" -> createEvaluation(repository);
+            case "Exercise" -> createExercise(repository);
+            case "Classroom" -> createClassroom(repository);
+            default -> throw new IncompatibleEntity("Invalid entity type");
+
         }
     }
 
-    private <T extends Entity> T createNewEntity(Class<T> entityClass) {
-        try {
-            T entity = entityClass.getDeclaredConstructor().newInstance();
-            System.out.println("Creating a new entity of type: " + entityClass.getSimpleName());
+    private void createStudent(CRUDRepository<?> repository) {
+        String studentName;
+        String studentEmail;
+        System.out.print("Enter student name: ");
+        studentName = scanner.nextLine();
+        System.out.print("Enter student email: ");
+        studentEmail = scanner.nextLine();
+        Student student = DataReceiver.rawStudent(studentName, studentEmail);
+        System.out.println("Student created successfully.");
+        System.out.println("Student name: " + studentName + " Student ID " + student.getName());
+    }
 
-            // Prompts for each entity type
-            if (entity instanceof Student) {
-                System.out.print("Enter student name: ");
-                String name = scanner.nextLine();
-                ((Student) entity).setName(name);
-            } else if (entity instanceof Subject) {
-                System.out.print("Enter subject name: ");
-                String name = scanner.nextLine();
-                ((Subject) entity).setName(name);
-            } else if (entity instanceof Teacher) {
-                System.out.print("Enter teacher name: ");
-                String name = scanner.nextLine();
-                ((Teacher) entity).setName(name);
-            } else if (entity instanceof Evaluation) {
-                System.out.print("Enter evaluation name: ");
-                String evaluationName = scanner.nextLine();
-                System.out.print("Enter evaluation type: ");
-                String evaluationType = scanner.nextLine();
-                ((Evaluation) entity).setEvaluationName(evaluationName);
-                ((Evaluation) entity).setEvaluationType(evaluationType);
-            } else if (entity instanceof Exercise) {
-                System.out.print("Enter exercise name: ");
-                String name = scanner.nextLine();
-                System.out.print("Enter grade: ");
-                double grade = scanner.nextDouble();
-                scanner.nextLine(); // Consume newline
-                ((Exercise) entity).setName(name);
-                ((Exercise) entity).setGrade(grade);
-            } else if (entity instanceof Classroom) {
-                System.out.print("Enter Classroom ID: ");
-                int id = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
-                ((Classroom) entity).setClassroomId(id);
-            }
+    private void createSubject(CRUDRepository<?> repository) {
+        String subjectName;
+        System.out.print("Enter subject name: ");
+        subjectName = scanner.nextLine();
+        DataReceiver.rawSubject(subjectName);
+        System.out.println("Subject created successfully.");
+    }
 
-            return entity;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    private void createTeacher(CRUDRepository<?> repository) {
+        String teacherName;
+        System.out.print("Enter teacher name: ");
+        teacherName = scanner.nextLine();
+        DataReceiver.rawTeacher(teacherName);
+        System.out.println("Teacher created successfully.");
+    }
+
+    private void createEvaluation(CRUDRepository<?> repository) {
+        String evaluationName;
+        int subjectID;
+        int studentID;
+        String evaluationType;
+        System.out.print("Enter evaluation name: ");
+        evaluationName = scanner.nextLine();
+        System.out.print("Enter subject ID: ");
+        subjectID = scanner.nextInt();
+        System.out.print("Enter student ID: ");
+        studentID = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        System.out.print("Enter evaluation type: ");
+        evaluationType = scanner.nextLine();
+        DataReceiver.rawEvaluation(evaluationName, subjectID, studentID, evaluationType);
+        System.out.println("Evaluation created successfully.");
+    }
+
+    private void createExercise(CRUDRepository<?> repository) {
+        String exerciseName;
+        double grade;
+        int evaluationID;
+        System.out.print("Enter exercise name: ");
+        exerciseName = scanner.nextLine();
+        System.out.print("Enter grade: ");
+        grade = scanner.nextDouble();
+        System.out.print("Enter evaluation ID: ");
+        evaluationID = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        DataReceiver.rawExercise(exerciseName, grade, evaluationID);
+        System.out.println("Exercise created successfully.");
+    }
+
+    private void createClassroom(CRUDRepository<?> repository) {
+        int classroomID;
+        System.out.print("Enter classroom ID: ");
+        classroomID = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        DataReceiver.rawClassroom(classroomID);
+        System.out.println("Classroom created successfully.");
     }
 
     private int getUserChoice(int maxOption) {

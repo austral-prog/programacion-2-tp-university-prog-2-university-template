@@ -139,10 +139,11 @@ public class DataReceiver {
         TeacherManager.createOrFetchEntity(teacher);
     }
 
-    public static void rawStudent(String studentName, String studentEmail) {
+    public static Student rawStudent(String studentName, String studentEmail) {
         Student student = new Student(studentName);
         student.setEmail(studentEmail);
-        StudentManager.createOrFetchEntity(student);
+        student = StudentManager.createOrFetchEntity(student);
+        return student;
     }
 
     public static void rawClassroom(int classroomID) {
