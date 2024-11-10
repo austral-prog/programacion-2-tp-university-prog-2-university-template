@@ -6,6 +6,7 @@ import com.university.model.Evaluations.*;
 import com.university.service.CriteriaAnalyzer.CriteriaSorter;
 
 import java.util.HashSet;
+import java.util.Map;
 
 import static com.university.service.EntityManager.MapIdEntities;
 
@@ -99,6 +100,7 @@ public class DataReceiver {
     }
 
     public static void rawExercise(String exerciseName, double grade, int evaluationID){
+
         Evaluation evaluation;
         if (MapIdEntities.get(evaluationID) instanceof Evaluation) {
             evaluation = (Evaluation) MapIdEntities.get(evaluationID);

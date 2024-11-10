@@ -71,7 +71,7 @@ class CRUDRepositoryTest {
             assertNotNull(crudRepository, "CRUDRepository should not be null");
 
             // Print the entity type being tested
-            System.out.println("Testing CRUDRepository for entity type: " + crudRepository.getIdentifier());
+            System.out.println("Testing CRUDRepository for entity type: " + crudRepository.getIdentifier(true));
 
             // Create an entity
             Entity testEntity = createTestEntity(crudRepository);

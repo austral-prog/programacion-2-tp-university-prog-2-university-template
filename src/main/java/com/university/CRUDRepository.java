@@ -31,7 +31,7 @@ public interface CRUDRepository<T extends Entity> {
      *
      * @param id the unique identifier of the entity to be deleted
      */
-    void delete(int id);
+    boolean delete(int id);
 
     /**
      * Returns a string identifier that represents the type of entity handled by this CRUD interface.
@@ -39,7 +39,7 @@ public interface CRUDRepository<T extends Entity> {
      *
      * @return a string representing the identifier of the entity type
      */
-    String getIdentifier();
+    String getIdentifier(boolean b);
 
     Class<Entity> getEntityClass();
 }
