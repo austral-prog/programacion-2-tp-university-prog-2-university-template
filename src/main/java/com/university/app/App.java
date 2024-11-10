@@ -2,7 +2,7 @@ package com.university.app;
 
 import com.university.inOut.*;
 import com.university.service.ReportGenerator;
-
+// todo test coverage, cli
 import java.util.List;
 
 public class App {
