@@ -12,4 +12,6 @@ public abstract class Entity implements com.university.Entity {
     }
 
     public abstract String classString();
+
+    public abstract String name();
 }

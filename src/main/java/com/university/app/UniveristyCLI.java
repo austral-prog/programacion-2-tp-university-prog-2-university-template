@@ -5,6 +5,7 @@ import com.university.CRUDRepository;
 
 import com.university.inOut.IncompatibleEntity;
 import com.university.model.*;
+import com.university.model.Evaluations.Evaluation;
 import com.university.service.EntityManager;
 import com.university.service.DataReceiver;
 
@@ -40,7 +41,7 @@ public class UniveristyCLI implements CLI {
         while (true) {
             System.out.println("\nSelect an entity type to manage:");
             for (int i = 0; i < crudInterfaces.length; i++) {
-                System.out.printf("%d. %s%n", i + 1, crudInterfaces[i].getIdentifier());
+                System.out.printf("%d. %s%n", i + 1, crudInterfaces[i].getIdentifier(true));
             }
             System.out.println("0. Exit");
 
@@ -57,16 +58,17 @@ public class UniveristyCLI implements CLI {
 
     private void handleEntityOperations(CRUDRepository<?> repository) {
         while (true) {
-            System.out.printf("\nManaging %s entities. Choose an operation:%n", repository.getIdentifier());
+            System.out.printf("\nManaging %s entities. Choose an operation:%n", repository.getIdentifier(true));
             System.out.println("1. Create");
             System.out.println("2. Read");
             System.out.println("3. Update");
-            System.out.println("4. Delete");
-            System.out.println("5. View all entities");
-            System.out.println("0. Back to main menu");
+            System.out.println("4. Delete"); // todo if passed true getIdentifier returns prural
+            System.out.println("5. View all "+ repository.getIdentifier(true));
+            System.out.println("6. View all entities");
+            System.out.println("7. Back to main menu");
 
-            int operationChoice = getUserChoice(5);
-            if (operationChoice == 0) break;
+            int operationChoice = getUserChoice(7);
+            if (operationChoice == 7) break;
 
             switch (operationChoice) {
                 case 1 -> createEntity(repository);
@@ -87,8 +89,7 @@ public class UniveristyCLI implements CLI {
                     scanner.nextLine(); // Consume newline
                     Entity entity = repository.read(id);
                     if (entity != null) {
-                        // Implement update logic based on entity type
-                        System.out.println("Update functionality not yet implemented for " + repository.getIdentifier());
+                        updateEntity(entity, repository);
                     } else {
                         System.out.println("Entity not found.");
                     }
@@ -97,26 +98,44 @@ public class UniveristyCLI implements CLI {
                     System.out.print("Enter entity ID to delete: ");
                     int id = scanner.nextInt();
                     scanner.nextLine(); // Consume newline
-                    repository.delete(id);
-                    System.out.println("Entity deleted (if it existed).");
+                    boolean flag = repository.delete(id);
+                    System.out.println(flag ? "Entity deleted successfully." : "Entity not found.");
                 }
                 case 5 -> viewAllEntities(repository);
+                case 6 -> viewALLEntities();
             }
         }
     }
 
+
+    private void updateEntity(Entity entity, CRUDRepository<?> repository) {
+        String className = repository.getIdentifier(false);
+        switch (className) {
+            case "Student" -> updateStudent((Student) entity, repository);
+            case "Subject" -> updateSubject((Subject) entity, repository);
+            case "Teacher" -> updateTeacher((Teacher) entity, repository);
+            case "Evaluation" -> updateEvaluation((Evaluation) entity, repository); // HAD TO IMPORT ONLY EVALUATION
+            case "Exercise" -> updateExercise((Exercise) entity, repository);
+            case "Classroom" -> updateClassroom((Classroom) entity, repository);
+            default -> throw new IncompatibleEntity("Invalid entity type");
+        }
+
+    }
+
     private void viewAllEntities(CRUDRepository<?> repository) {
         EntityManager<?> entityManager = (EntityManager<?>) repository;
-        Map<Integer, Entity> entities = entityManager.getAllEntities();
+        Map<Integer, Entity> entities = entityManager.getEntityMap();
         if (entities.isEmpty()) {
             System.out.println("No entities found.");
-        } else {
-            entities.forEach((id, entity) -> System.out.println("ID: " + id + ", Entity: " + entity));
+        } else { //todo implementation name in Entity
+            entities.forEach((id, entity) -> System.out.println("ID: " + id + ", Entity: " + entity.name()));
         }
+    }
+    private void viewALLEntities() {
     }
 
     private void createEntity(CRUDRepository<?> repository) {
-        String className = repository.getIdentifier();
+        String className = repository.getIdentifier(true);
         switch (className) {
             case "Student" -> createStudent(repository);
             case "Subject" -> createSubject(repository);

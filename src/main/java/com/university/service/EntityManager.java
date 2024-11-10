@@ -4,7 +4,6 @@ import com.university.CRUDRepository;
 import com.university.inOut.IncompatibleEntity;
 import com.university.model.*;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -14,15 +13,14 @@ import java.util.Map;
 
 public class EntityManager<E extends Entity> implements CRUDRepository<E> {
 
-    private final Class<E> entityClass;  // Store the class type of E for type checking
-
     public EntityManager(Class<E> entityClass) {
         this.entityClass = entityClass;
     }
 
-    public static Map<Integer, Entity> MapIdEntities = new HashMap<>();
-    public static HashSet<Entity> globalEntities = new HashSet<>();
+    static Map<Integer, Entity> MapIdEntities = ManagerHolder.MapIdEntities;
+    private static HashSet<Entity> globalEntities = ManagerHolder.globalEntities;
 
+    private final Class<E> entityClass;  // Store the class type of E for type checking
     public HashSet<E> entities = new HashSet<>();
 
     // Registers an entity
@@ -52,6 +50,14 @@ public class EntityManager<E extends Entity> implements CRUDRepository<E> {
         return entityRemoved;
     }
 
+    public Map<Integer, Entity> getEntityMap() {
+        return MapIdEntities;
+    }
+
+    public HashSet<Entity> getGlobalEntities() {
+        return globalEntities;
+    }
+
     @Override
     public void create(E entity) {
         if (globalEntities.contains(entity)) {return;}
@@ -75,25 +81,22 @@ public class EntityManager<E extends Entity> implements CRUDRepository<E> {
     }
 
     @Override
-    public void delete(int id) {
+    public boolean delete(int id) {
         Entity entity = MapIdEntities.get(id);
         if (entityClass.isInstance(entity)) {
-            deleteEntity(entityClass.cast(entity));  // Safe cast
+            boolean flag = deleteEntity(entityClass.cast(entity));  // Safe cast
+            return flag;
         }
         throw new IncompatibleEntity("Entity is not of the correct type");
     }
 
     @Override
-    public String getIdentifier() {
+    public String getIdentifier(boolean b) {
         return entityClass.getSimpleName();
     }
 
     @Override
     public Class<Entity> getEntityClass() {
         return Entity.class;
-    }
-
-    public Map<Integer, Entity> getAllEntities() {
-        return MapIdEntities;
     }
 }
