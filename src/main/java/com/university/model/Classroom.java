@@ -17,10 +17,6 @@ public class Classroom extends Entity {
         Teachers = new ArrayList<>();
     }
 
-    public int getClassroomId() {
-        return ClassroomId;
-    }
-
     @Override
     public String name() {
         return String.valueOf(ClassroomId);
@@ -38,7 +34,7 @@ public class Classroom extends Entity {
         return Teachers;
     }
 
-    public void setClassroomId(int id) {
+    public void setClassroomID(int id) {
         this.ClassroomId = id;
     }
 
@@ -70,9 +66,5 @@ public class Classroom extends Entity {
     @Override
     public String classString() {
         return "Classroom";
-    }
-
-    public void setClassroomID(int classroomID) {
-        this.ClassroomId = classroomID;
     }
 }

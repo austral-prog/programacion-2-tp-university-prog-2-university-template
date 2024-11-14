@@ -142,13 +142,12 @@ public class DataReceiver {
     }
 
     private static Evaluation sortConstructor(String evaluationType, String evaluationName, Student student, Subject subject) {
-        Evaluation evaluation = switch (evaluationType) {
+        return switch (evaluationType) {
             case "WRITTEN_EXAM" -> new WrittenExam(evaluationName, subject, student, evaluationType);
             case "ORAL_EXAM" -> new OralExam(evaluationName, subject, student, evaluationType);
             case "FINAL_PRACTICAL_WORK" -> new FinalPracticalWork(evaluationName, subject, student, evaluationType);
             case "PRACTICAL_WORK" -> new PracticalWork(evaluationName, subject, student, evaluationType);
             default -> throw new IllegalStateException("Unexpected value: " + evaluationType);
         };
-        return evaluation;
     }
 }

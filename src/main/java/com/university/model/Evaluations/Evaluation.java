@@ -158,8 +158,4 @@ public abstract class Evaluation extends Entity {
     public void setEvaluationName(String evaluationName) {
         this.name = evaluationName;
     }
-
-    public void setEvaluationType(String evaluationType) {
-        this.name = evaluationType;
-    }
 }

@@ -120,18 +120,18 @@ public class UniversityCLI implements CLI {
     private void updateEntity(Entity entity, CRUDRepository<?> repository) {
         String className = repository.getIdentifier();
         switch (className) {
-            case "Student" -> updateStudent((Student) entity, repository);
-            case "Subject" -> updateSubject((Subject) entity, repository);
-            case "Teacher" -> updateTeacher((Teacher) entity, repository);
+            case "Student" -> updateStudent((Student) entity);
+            case "Subject" -> updateSubject((Subject) entity);
+            case "Teacher" -> updateTeacher((Teacher) entity);
             case "Evaluation" -> updateEvaluation((Evaluation) entity, repository); // HAD TO IMPORT ONLY EVALUATION
-            case "Exercise" -> updateExercise((Exercise) entity, repository);
-            case "Classroom" -> updateClassroom((Classroom) entity, repository);
+            case "Exercise" -> updateExercise((Exercise) entity);
+            case "Classroom" -> updateClassroom((Classroom) entity);
             default -> throw new IncompatibleEntity("Invalid entity type");
         }
 
     }
 
-    private void updateStudent(Student student, CRUDRepository<?> repository) {
+    private void updateStudent(Student student) {
         System.out.println("Updating " + student.toString());
         System.out.println("Enter new student name: ");
         String studentName = getUserString();
@@ -141,15 +141,14 @@ public class UniversityCLI implements CLI {
         student.setEmail(studentEmail);
     }
 
-    private void updateClassroom(Classroom entity, CRUDRepository<?> repository) {
+    private void updateClassroom(Classroom entity) {
         System.out.println("Updating " + entity.toString());
         System.out.println("Enter new classroom ID: ");
         int classroomID = Integer.parseInt(getUserString());
         entity.setClassroomID(classroomID);
-
     }
 
-    private void updateExercise(Exercise entity, CRUDRepository<?> repository) {
+    private void updateExercise(Exercise entity) {
         System.out.println("Updating " + entity.toString());
         System.out.println("Enter new exercise name: ");
         String exerciseName = getUserString();
@@ -173,21 +172,21 @@ public class UniversityCLI implements CLI {
             System.out.print("Enter exercise ID to update: ");
             int id = Integer.parseInt(getUserString());
             if (entityManager.getEntityMap().get(id) instanceof Exercise exercise) {
-                updateExercise(exercise, repository);
+                updateExercise(exercise);
             } else {
                 throw new IncompatibleEntity("Invalid ID caused entity incompatibilities.");
             }
         }
     }
 
-    private void updateTeacher(Teacher entity, CRUDRepository<?> repository) {
+    private void updateTeacher(Teacher entity) {
         System.out.println("Updating " + entity.toString());
         System.out.println("Enter new teacher name: ");
         String teacherName = getUserString();
         entity.setName(teacherName);
     }
 
-    private void updateSubject(Subject entity, CRUDRepository<?> repository) {
+    private void updateSubject(Subject entity) {
         System.out.println("Updating " + entity.toString());
         System.out.println("Enter new subject name: ");
         String subjectName = getUserString();
@@ -212,19 +211,19 @@ public class UniversityCLI implements CLI {
     private void createEntity(CRUDRepository<?> repository) {
         String className = repository.getIdentifier();
         Entity entity = switch (className) {
-            case "Student" -> createStudent(repository);
-            case "Subject" -> createSubject(repository);
-            case "Teacher" -> createTeacher(repository);
-            case "Evaluation" -> createEvaluation(repository);
-            case "Exercise" -> createExercise(repository);
-            case "Classroom" -> createClassroom(repository);
+            case "Student" -> createStudent();
+            case "Subject" -> createSubject();
+            case "Teacher" -> createTeacher();
+            case "Evaluation" -> createEvaluation();
+            case "Exercise" -> createExercise();
+            case "Classroom" -> createClassroom();
             default -> throw new IncompatibleEntity("Invalid entity type");
         };
         System.out.println(className + " created successfully.");
         System.out.println(entity.toString());
     }
 
-    private Student createStudent(CRUDRepository<?> repository) {
+    private Student createStudent() {
         String studentName;
         String studentEmail;
 
@@ -235,19 +234,19 @@ public class UniversityCLI implements CLI {
         return DataReceiver.rawStudent(studentName, studentEmail);
     }
 
-    private Subject createSubject(CRUDRepository<?> repository) {
+    private Subject createSubject() {
         System.out.print("Enter subject name: ");
         String subjectName = getUserString();
         return DataReceiver.rawSubject(subjectName);
     }
 
-    private Teacher createTeacher(CRUDRepository<?> repository) {
+    private Teacher createTeacher() {
         System.out.print("Enter teacher name: ");
         String teacherName = getUserString();
         return DataReceiver.rawTeacher(teacherName);
     }
 
-    private Evaluation createEvaluation(CRUDRepository<?> repository) {
+    private Evaluation createEvaluation() {
         String evaluationName;
         int subjectID;
         int studentID;
@@ -263,7 +262,7 @@ public class UniversityCLI implements CLI {
         return DataReceiver.rawEvaluation(evaluationName, subjectID, studentID, evaluationType);
     }
 
-    private Exercise createExercise(CRUDRepository<?> repository) {
+    private Exercise createExercise() {
         String exerciseName;
         double grade;
         int evaluationID;
@@ -276,7 +275,7 @@ public class UniversityCLI implements CLI {
         return DataReceiver.rawExercise(exerciseName, grade, evaluationID);
     }
 
-    private Classroom createClassroom(CRUDRepository<?> repository) {
+    private Classroom createClassroom() {
         int classroomID;
         System.out.print("Enter classroom ID: ");
         classroomID = Integer.parseInt(getUserString());

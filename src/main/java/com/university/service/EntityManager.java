@@ -18,7 +18,7 @@ public class EntityManager<E extends Entity> implements CRUDRepository<E> {
     }
 
     static Map<Integer, Entity> MapIdEntities = ManagerHolder.MapIdEntities;
-    private static HashSet<Entity> globalEntities = ManagerHolder.globalEntities;
+    private final static HashSet<Entity> globalEntities = ManagerHolder.globalEntities;
 
     private final Class<E> entityClass;  // Store the class type of E for type checking
     public HashSet<E> entities = new HashSet<>();
@@ -46,16 +46,11 @@ public class EntityManager<E extends Entity> implements CRUDRepository<E> {
     }
 
     public boolean deleteEntity(E entity) {
-        boolean entityRemoved = Remover.disconnection(entity, this);
-        return entityRemoved;
+        return Remover.disconnection(entity, this);
     }
 
     public Map<Integer, Entity> getEntityMap() {
         return MapIdEntities;
-    }
-
-    public HashSet<Entity> getGlobalEntities() {
-        return globalEntities;
     }
 
     public HashSet<E> getEntities() {
@@ -88,8 +83,8 @@ public class EntityManager<E extends Entity> implements CRUDRepository<E> {
     public boolean delete(int id) {
         Entity entity = MapIdEntities.get(id);
         if (entityClass.isInstance(entity)) {
-            boolean flag = deleteEntity(entityClass.cast(entity));  // Safe cast
-            return flag;
+            // Safe cast
+            return deleteEntity(entityClass.cast(entity));
         }
         throw new IncompatibleEntity("Entity is not of the correct type");
     }

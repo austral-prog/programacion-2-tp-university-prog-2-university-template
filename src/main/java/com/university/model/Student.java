@@ -21,10 +21,6 @@ public class Student extends Entity  {
         return email;
     }
 
-    public HashSet<Subject> getSubjects() {
-        return subjects;
-    }
-
     public void setEmail(String email) {
         this.email = email;
     }
