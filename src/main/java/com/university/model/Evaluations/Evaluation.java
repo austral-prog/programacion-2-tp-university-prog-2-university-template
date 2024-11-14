@@ -33,7 +33,7 @@ public abstract class Evaluation extends Entity {
 
     // getters for the "main" and final variables
 
-    public String getName() {
+    public String name() {
         return name;
     }
 
@@ -50,7 +50,7 @@ public abstract class Evaluation extends Entity {
     }
 
     public String studentName() {
-        return this.student.getName();
+        return this.student.name();
     } // convenience method
 
     public ArrayList<Exercise> getExercises() {

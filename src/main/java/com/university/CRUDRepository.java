@@ -39,7 +39,7 @@ public interface CRUDRepository<T extends Entity> {
      *
      * @return a string representing the identifier of the entity type
      */
-    String getIdentifier(boolean b);
+    String getIdentifier();
 
     Class<Entity> getEntityClass();
 }

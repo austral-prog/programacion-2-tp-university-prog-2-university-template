@@ -13,7 +13,7 @@ public class Exercise extends Entity {
         this.grade = grade;
         this.evaluation = evaluation;
     }
-    public String getName() {
+    public String name() {
         return name;
     }
 
@@ -50,5 +50,9 @@ public class Exercise extends Entity {
 
     public void setGrade(double grade) {
         this.grade = grade;
+    }
+
+    public void setExerciseName(String exerciseName) {
+        this.name = exerciseName;
     }
 }

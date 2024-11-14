@@ -46,7 +46,7 @@ public class Subject extends Entity  {
         return classrooms;
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 
@@ -70,5 +70,9 @@ public class Subject extends Entity  {
     @Override
     public String classString() {
         return "Subject";
+    }
+
+    public void setSubjectName(String subjectName) {
+        this.name = subjectName;
     }
 }

@@ -58,6 +58,10 @@ public class EntityManager<E extends Entity> implements CRUDRepository<E> {
         return globalEntities;
     }
 
+    public HashSet<E> getEntities() {
+        return entities;
+    }
+
     @Override
     public void create(E entity) {
         if (globalEntities.contains(entity)) {return;}
@@ -91,9 +95,10 @@ public class EntityManager<E extends Entity> implements CRUDRepository<E> {
     }
 
     @Override
-    public String getIdentifier(boolean b) {
+    public String getIdentifier() {
         return entityClass.getSimpleName();
     }
+
 
     @Override
     public Class<Entity> getEntityClass() {

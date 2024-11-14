@@ -30,6 +30,11 @@ class TestEntity extends Entity {
     }
 
     @Override
+    public String name() {
+        return "";
+    }
+
+    @Override
     public void setId(int id) {
         this.id = id;
     }
@@ -71,7 +76,7 @@ class CRUDRepositoryTest {
             assertNotNull(crudRepository, "CRUDRepository should not be null");
 
             // Print the entity type being tested
-            System.out.println("Testing CRUDRepository for entity type: " + crudRepository.getIdentifier(true));
+            System.out.println("Testing CRUDRepository for entity type: " + crudRepository.getIdentifier());
 
             // Create an entity
             Entity testEntity = createTestEntity(crudRepository);

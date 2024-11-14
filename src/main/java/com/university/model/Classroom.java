@@ -21,6 +21,11 @@ public class Classroom extends Entity {
         return ClassroomId;
     }
 
+    @Override
+    public String name() {
+        return String.valueOf(ClassroomId);
+    }
+
     public List<Subject> getSubjects() {
         return Subjects;
     }
@@ -31,6 +36,10 @@ public class Classroom extends Entity {
 
     public List<Teacher> getTeachers() {
         return Teachers;
+    }
+
+    public void setClassroomId(int id) {
+        this.ClassroomId = id;
     }
 
     public void addSubject(Subject subject) {
@@ -63,7 +72,7 @@ public class Classroom extends Entity {
         return "Classroom";
     }
 
-    public void setClassroomId(int id) {
-        this.ClassroomId = id;
+    public void setClassroomID(int classroomID) {
+        this.ClassroomId = classroomID;
     }
 }

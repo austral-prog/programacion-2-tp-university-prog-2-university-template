@@ -17,7 +17,7 @@ public class Teacher extends Entity  {
         this.classrooms = new ArrayList<>();
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 

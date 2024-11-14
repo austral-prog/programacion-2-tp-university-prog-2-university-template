@@ -6,7 +6,6 @@ import com.university.model.Evaluations.*;
 import com.university.service.CriteriaAnalyzer.CriteriaSorter;
 
 import java.util.HashSet;
-import java.util.Map;
 
 import static com.university.service.EntityManager.MapIdEntities;
 
@@ -58,13 +57,7 @@ public class DataReceiver {
 
         Student student = new Student(studentName);
         Subject subject = new Subject(subjectName);
-        Evaluation evaluation = switch (evaluationType) {
-            case "WRITTEN_EXAM" -> new WrittenExam(evaluationName, subject, student, evaluationType);
-            case "ORAL_EXAM" -> new OralExam(evaluationName, subject, student, evaluationType);
-            case "FINAL_PRACTICAL_WORK" -> new FinalPracticalWork(evaluationName, subject, student, evaluationType);
-            case "PRACTICAL_WORK" -> new PracticalWork(evaluationName, subject, student, evaluationType);
-            default -> throw new IllegalStateException("Unexpected value: " + evaluationType);
-        };
+        Evaluation evaluation = sortConstructor(evaluationType, evaluationName, student, subject);
         Exercise exercise = new Exercise(exerciseName, Double.parseDouble(grade), evaluation);
 
         student = StudentManager.createOrFetchEntity(student);
@@ -90,8 +83,8 @@ public class DataReceiver {
                 String evaluationName = thirdInputLine[k];
                 String subjectName = thirdInputLine[0];
 
-                if (evaluationName.equals(evaluation.getName())
-                        && subjectName.equals(evaluation.getSubject().getName())) { // evaluation match condition
+                if (evaluationName.equals(evaluation.name())
+                        && subjectName.equals(evaluation.getSubject().name())) { // evaluation match condition
                     CriteriaSorter.evaluate(evaluation, thirdInputLine[1], thirdInputLine[2]);
                 }
             }
@@ -99,7 +92,7 @@ public class DataReceiver {
         }
     }
 
-    public static void rawExercise(String exerciseName, double grade, int evaluationID){
+    public static Exercise rawExercise(String exerciseName, double grade, int evaluationID){
 
         Evaluation evaluation;
         if (MapIdEntities.get(evaluationID) instanceof Evaluation) {
@@ -109,36 +102,30 @@ public class DataReceiver {
         }
         if (evaluation != null) {
             Exercise exercise = new Exercise(exerciseName, grade, evaluation);
-            ExerciseManager.createOrFetchEntity(exercise);
+            return ExerciseManager.createOrFetchEntity(exercise);
+        } else {
+            throw new IncompatibleEntity("Evaluation ID is not valid");
         }
     }
 
-    public static void rawEvaluation(String evaluationName, int subjectID, int studentID, String evaluationType) {
+    public static Evaluation rawEvaluation(String evaluationName, int subjectID, int studentID, String evaluationType) {
         // Retrieve Subject and Student by ID using MapIdEntities
-        if (MapIdEntities.get(subjectID) instanceof Subject && MapIdEntities.get(studentID) instanceof Student) {
-            Subject subject = (Subject) MapIdEntities.get(subjectID);
-            Student student = (Student) MapIdEntities.get(studentID);
-            Evaluation evaluation = switch (evaluationType) {
-                case "WRITTEN_EXAM" -> new WrittenExam(evaluationName, subject, student, evaluationType);
-                case "ORAL_EXAM" -> new OralExam(evaluationName, subject, student, evaluationType);
-                case "FINAL_PRACTICAL_WORK" -> new FinalPracticalWork(evaluationName, subject, student, evaluationType);
-                case "PRACTICAL_WORK" -> new PracticalWork(evaluationName, subject, student, evaluationType);
-                default -> throw new IllegalStateException("Unexpected value: " + evaluationType);
-            };
-            EvaluationManager.createOrFetchEntity(evaluation);
+        if (MapIdEntities.get(subjectID) instanceof Subject subject && MapIdEntities.get(studentID) instanceof Student student) {
+            Evaluation evaluation = sortConstructor(evaluationType, evaluationName, student, subject);
+            return EvaluationManager.createOrFetchEntity(evaluation);
         } else {
             throw new IncompatibleEntity("Subject or Student ID is not valid");
         }
     }
 
-    public static void rawSubject(String subjectName) {
+    public static Subject rawSubject(String subjectName) {
         Subject subject = new Subject(subjectName);
-        SubjectManager.createOrFetchEntity(subject);
+        return SubjectManager.createOrFetchEntity(subject);
     }
 
-    public static void rawTeacher(String teacherName) {
+    public static Teacher rawTeacher(String teacherName) {
         Teacher teacher = new Teacher(teacherName);
-        TeacherManager.createOrFetchEntity(teacher);
+        return TeacherManager.createOrFetchEntity(teacher);
     }
 
     public static Student rawStudent(String studentName, String studentEmail) {
@@ -148,8 +135,20 @@ public class DataReceiver {
         return student;
     }
 
-    public static void rawClassroom(int classroomID) {
+    public static Classroom rawClassroom(int classroomID) {
         Classroom classroom = new Classroom(classroomID);
         ClassroomManager.createOrFetchEntity(classroom);
+        return classroom;
+    }
+
+    private static Evaluation sortConstructor(String evaluationType, String evaluationName, Student student, Subject subject) {
+        Evaluation evaluation = switch (evaluationType) {
+            case "WRITTEN_EXAM" -> new WrittenExam(evaluationName, subject, student, evaluationType);
+            case "ORAL_EXAM" -> new OralExam(evaluationName, subject, student, evaluationType);
+            case "FINAL_PRACTICAL_WORK" -> new FinalPracticalWork(evaluationName, subject, student, evaluationType);
+            case "PRACTICAL_WORK" -> new PracticalWork(evaluationName, subject, student, evaluationType);
+            default -> throw new IllegalStateException("Unexpected value: " + evaluationType);
+        };
+        return evaluation;
     }
 }
