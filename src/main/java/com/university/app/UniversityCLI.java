@@ -36,18 +36,45 @@ public class UniversityCLI implements CLI {
         universityCLI.runCLI(crudInterfaces);
     }
 
+    // Methods to get user input
+
+    private int getUserChoice(int maxOption) {
+        while (true) {
+            System.out.print("Select an option: ");
+            if (scanner.hasNextInt()) {
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline only after a valid integer input
+                if (choice >= 1 && choice <= maxOption) return choice;
+            } else {
+                scanner.nextLine(); // Consume invalid input
+            }
+            System.out.println("Invalid choice. Please try again.");
+        }
+    }
+
+    private String getUserString() {
+        while (true) {
+            String input = scanner.nextLine();
+            if (!input.isEmpty()) return input;
+            System.out.println("Input cannot be empty. Please try again.");
+        }
+    }
+
     @Override
     public void runCLI(CRUDRepository<?>[] crudInterfaces) {
         while (true) {
             System.out.println("\nSelect an entity type to manage:");
             for (int i = 0; i < crudInterfaces.length; i++) {
-                System.out.printf("%d. %s%n", i +1, crudInterfaces[i].getIdentifier()+"s");
+                System.out.printf("%d. %s%n", i + 1, crudInterfaces[i].getIdentifier() + "s");
             }
-            System.out.println((crudInterfaces.length +1) + ". Exit");
+            System.out.println((crudInterfaces.length + 1) + ". Exit");
 
-            int entityChoice = getUserChoice(crudInterfaces.length +1); //checks if input is correct, if not asks again
+            int entityChoice = getUserChoice(crudInterfaces.length + 1); //checks if input is correct, if not asks again
 
-            if (entityChoice == crudInterfaces.length +1){closeCLI();break;} //exit choice
+            if (entityChoice == crudInterfaces.length + 1) {
+                closeCLI();
+                break;
+            } //exit choice
 
             CRUDRepository<?> selectedRepository = crudInterfaces[entityChoice - 1];
             try {
@@ -67,7 +94,7 @@ public class UniversityCLI implements CLI {
 
     private void handleEntityOperations(CRUDRepository<?> repository, CRUDRepository<?>[] crudInterfaces) {
         while (true) {
-            System.out.printf("\nManaging %s entities. Choose an operation:%n", repository.getIdentifier() +"s");
+            System.out.printf("\nManaging %s entities. Choose an operation:%n", repository.getIdentifier() + "s");
             System.out.println("1. Create");
             System.out.println("2. Read");
             System.out.println("3. Update");
@@ -110,12 +137,27 @@ public class UniversityCLI implements CLI {
                     boolean flag = repository.delete(id);
                     System.out.println(flag ? "Entity deleted successfully." : "Entity not found.");
                 }
-                case 5 -> viewAllEntities(repository);
-                case 6 -> viewEveryEntity(crudInterfaces);
+                case 5 -> viewThisEntities(repository);
+                case 6 -> viewAllEntities(crudInterfaces);
             }
         }
     }
 
+    private <E extends Entity> void viewThisEntities(CRUDRepository<E> repository) {
+        EntityManager<E> entityManager = (EntityManager<E>) repository;
+        HashSet<E> entities = entityManager.getEntities();
+        if (entities.isEmpty()) {
+            System.out.println("No entities found.");
+        } else {
+            entities.forEach((entity -> System.out.println(entity.toString())));
+        }
+    }
+
+    private void viewAllEntities(CRUDRepository<?>[] crudInterfaces) {
+        for (CRUDRepository<?> repository : crudInterfaces) {
+            viewThisEntities(repository);
+        }
+    }
 
     private void updateEntity(Entity entity, CRUDRepository<?> repository) {
         String className = repository.getIdentifier();
@@ -193,21 +235,6 @@ public class UniversityCLI implements CLI {
         entity.setSubjectName(subjectName);
     }
 
-    private <E extends Entity> void  viewAllEntities(CRUDRepository<E> repository) {
-        EntityManager<E> entityManager = (EntityManager<E>) repository;
-        HashSet<E> entities = entityManager.getEntities();
-        if (entities.isEmpty()) {
-            System.out.println("No entities found.");
-        } else {
-            entities.forEach((entity -> System.out.println(entity.toString())));
-        }
-    }
-    private void viewEveryEntity(CRUDRepository<?>[] crudInterfaces) {
-        for (CRUDRepository<?> repository : crudInterfaces) {
-            viewAllEntities(repository);
-        }
-    }
-
     private void createEntity(CRUDRepository<?> repository) {
         String className = repository.getIdentifier();
         Entity entity = switch (className) {
@@ -280,26 +307,5 @@ public class UniversityCLI implements CLI {
         System.out.print("Enter classroom ID: ");
         classroomID = Integer.parseInt(getUserString());
         return DataReceiver.rawClassroom(classroomID);
-    }
-    private int getUserChoice(int maxOption) {
-        while (true) {
-            System.out.print("Select an option: ");
-            if (scanner.hasNextInt()) {
-                int choice = scanner.nextInt();
-                scanner.nextLine(); // Consume newline only after a valid integer input
-                if (choice >= 1 && choice <= maxOption) return choice;
-            } else {
-                scanner.nextLine(); // Consume invalid input
-            }
-            System.out.println("Invalid choice. Please try again.");
-        }
-    }
-
-    private String getUserString() {
-        while (true) {
-            String input = scanner.nextLine();
-            if (!input.isEmpty()) return input;
-            System.out.println("Input cannot be empty. Please try again.");
-        }
     }
 }
