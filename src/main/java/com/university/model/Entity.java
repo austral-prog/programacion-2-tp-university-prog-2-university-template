@@ -1,15 +1,11 @@
 package com.university.model;
 
 public abstract class Entity implements com.university.Entity {
-    private int id;
+    private Integer id;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public void setId(Integer id) {this.id = id;}
 
-    public int getId() {
-        return id;
-    }
+    public int getId() {return id;}
 
     public abstract String classString();
 
@@ -17,6 +13,6 @@ public abstract class Entity implements com.university.Entity {
 
     @Override
     public String toString() {
-        return classString() + " name: " + name() + ", id: " + id;
+        return "name: " + name() + ", id: " + id;
     }
 }

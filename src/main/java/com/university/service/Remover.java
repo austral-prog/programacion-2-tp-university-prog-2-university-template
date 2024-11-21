@@ -3,13 +3,13 @@ package com.university.service;
 import com.university.model.*;
 import com.university.model.Evaluations.Evaluation;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
-import static com.university.service.EntityManager.MapIdEntities;
 
 public class Remover {
 
-    public static boolean disconnection(Entity entity, EntityManager<?> manager) {
+    public static boolean disconnection(Entity entity, EntityManager<?> manager, ManagerRecord ManagerRecord) {
         // Check object type of manager
         // Check if entity is a type of object in manager
         // Check if entity is in the manager
@@ -20,32 +20,32 @@ public class Remover {
 
             if (entity instanceof Student) {
 
-                    removeStudent((Student) entity);
+                    removeStudent((Student) entity, ManagerRecord);
                     return true;
                 }
             } else if (entity instanceof Evaluation) {
 
-                    removeEvaluation((Evaluation) entity);
+                    removeEvaluation((Evaluation) entity, ManagerRecord);
                     return true;
 
             } else if (entity instanceof Exercise) {
 
-                    removeExercise((Exercise) entity);
+                    removeExercise((Exercise) entity, ManagerRecord);
                     return true;
 
             } else if (entity instanceof Subject) {
 
-                    removeSubject((Subject) entity);
+                    removeSubject((Subject) entity, ManagerRecord);
                     return true;
 
             } else if (entity instanceof Teacher) {
 
-                    removeTeacher((Teacher) entity);
+                    removeTeacher((Teacher) entity, ManagerRecord);
                     return true;
 
             } else if (entity instanceof Classroom) {
 
-                    removeClassroom((Classroom) entity);
+                    removeClassroom((Classroom) entity, ManagerRecord);
                     return true;
 
             }
@@ -54,9 +54,11 @@ public class Remover {
 
 
 
-    static private void removeClassroom(Classroom classroom) {
+    static private void removeClassroom(Classroom classroom, ManagerRecord ManagerRecord) {
 
-    HashSet<Classroom> classes = ManagerHolder.ClassroomManager.entities;
+    HashSet<Classroom> classes = ManagerRecord.classroomManager().entities;
+    HashMap<Integer, Entity> MapIdEntities = ManagerRecord.mapIdEntities();
+
 
     for (Teacher teacher : classroom.getTeachers()) {
         teacher.getClassrooms().remove(classroom);
@@ -69,9 +71,10 @@ public class Remover {
     MapIdEntities.remove(classroom.getId());
     }
 
-    static private void removeTeacher(Teacher teacher) {
+    static private void removeTeacher(Teacher teacher, ManagerRecord ManagerRecord) {
 
-    HashSet<Teacher> teachers = ManagerHolder.TeacherManager.entities;
+    HashSet<Teacher> teachers = ManagerRecord.teacherManager().entities;
+    HashMap<Integer, Entity> MapIdEntities = ManagerRecord.mapIdEntities();
 
     for (Classroom classroom : teacher.getClassrooms()) {
         classroom.getTeachers().remove(teacher);
@@ -85,9 +88,10 @@ public class Remover {
     MapIdEntities.remove(teacher.getId());
     }
 
-    static private void removeSubject(Subject subject) {
+    static private void removeSubject(Subject subject, ManagerRecord ManagerRecord) {
 
-    HashSet<Subject> subjects = ManagerHolder.SubjectManager.entities;
+    HashSet<Subject> subjects = ManagerRecord.subjectManager().entities;
+    HashMap<Integer, Entity> MapIdEntities = ManagerRecord.mapIdEntities();
 
     for (Teacher teacher : subject.getTeachers()) {
         teacher.getSubjects().remove(subject);
@@ -102,21 +106,23 @@ public class Remover {
     MapIdEntities.remove(subject.getId());
     }
 
-    static private void removeExercise(Exercise exercise) {
+    static private void removeExercise(Exercise exercise, ManagerRecord ManagerRecord) {
 
-    HashSet<Exercise> exercises = ManagerHolder.ExerciseManager.entities;
+    HashSet<Exercise> exercises = ManagerRecord.exerciseManager().entities;
+    HashMap<Integer, Entity> MapIdEntities = ManagerRecord.mapIdEntities();
 
     exercise.getEvaluation().getExercises().remove(exercise);
     MapIdEntities.remove(exercise.getId());
     exercises.remove(exercise);
     }
 
-    static private void removeEvaluation(Evaluation evaluation) {
+    static private void removeEvaluation(Evaluation evaluation, ManagerRecord ManagerRecord) {
 
-    HashSet<Evaluation> evaluations = ManagerHolder.EvaluationManager.entities;
+    HashSet<Evaluation> evaluations = ManagerRecord.evaluationManager().entities;
+    HashMap<Integer, Entity> MapIdEntities = ManagerRecord.mapIdEntities();
 
     for (Exercise exercise : evaluation.getExercises()) {
-        removeExercise(exercise);
+        removeExercise(exercise, ManagerRecord);
     }
     evaluation.getExercises().clear();
     evaluation.getSubject().getStudents().remove(evaluation.getStudent());
@@ -124,17 +130,19 @@ public class Remover {
     MapIdEntities.remove(evaluation.getId());
     }
 
-    static private void removeStudent(Student student) {
+    static private void removeStudent(Student student, ManagerRecord ManagerRecord) {
 
-        HashSet<Student> students = ManagerHolder.StudentManager.entities;
-        HashSet<Evaluation> evaluations = ManagerHolder.EvaluationManager.entities;
-        HashSet<Classroom> classes = ManagerHolder.ClassroomManager.entities;
-        HashSet<Subject> subjects = ManagerHolder.SubjectManager.entities;
-        HashSet<Teacher> teachers = ManagerHolder.TeacherManager.entities;
+        HashSet<Student> students = ManagerRecord.studentManager().entities;
+        HashSet<Evaluation> evaluations = ManagerRecord.evaluationManager().entities;
+        HashSet<Classroom> classes = ManagerRecord.classroomManager().entities;
+        HashSet<Subject> subjects = ManagerRecord.subjectManager().entities;
+        HashSet<Teacher> teachers = ManagerRecord.teacherManager().entities;
+
+        HashMap<Integer, Entity> MapIdEntities = ManagerRecord.mapIdEntities();
 
         for (Evaluation evaluation : evaluations) {
             if (evaluation.getStudent().equals(student)) {
-                removeEvaluation(evaluation);
+                removeEvaluation(evaluation, ManagerRecord);
             }
         }
 

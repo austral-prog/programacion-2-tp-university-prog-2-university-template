@@ -7,12 +7,11 @@ import com.university.inOut.IncompatibleEntity;
 import com.university.model.*;
 import com.university.model.Evaluations.Evaluation;
 import com.university.service.EntityManager;
-import com.university.service.DataReceiver;
+import com.university.service.Logic.DataReceiver;
+import com.university.service.ManagerRecord;
 
 import java.util.HashSet;
 import java.util.Scanner;
-
-import static com.university.service.ManagerHolder.*;
 
 public class UniversityCLI implements CLI {
 
@@ -25,7 +24,15 @@ public class UniversityCLI implements CLI {
     public static void main(String[] args) {
 
         App app = new App();
-        app.runTasks();
+        ManagerRecord managerRecord = new ManagerRecord();
+        ManagerRecord managerHolder = app.runTasks(managerRecord);
+
+        EntityManager<Student> StudentManager = managerHolder.studentManager();
+        EntityManager<Teacher> TeacherManager = managerHolder.teacherManager();
+        EntityManager<Classroom> ClassroomManager = managerHolder.classroomManager();
+        EntityManager<Subject> SubjectManager = managerHolder.subjectManager();
+        EntityManager<Evaluation> EvaluationManager = managerHolder.evaluationManager();
+        EntityManager<Exercise> ExerciseManager = managerHolder.exerciseManager();
 
         CRUDRepository<?>[] crudInterfaces = new CRUDRepository<?>[]{
                 StudentManager, TeacherManager, ClassroomManager,
@@ -33,7 +40,7 @@ public class UniversityCLI implements CLI {
         };
         // Run the CLI
         UniversityCLI universityCLI = new UniversityCLI();
-        universityCLI.runCLI(crudInterfaces);
+        universityCLI.runCLI(crudInterfaces, managerHolder);
     }
 
     // Methods to get user input
@@ -61,7 +68,7 @@ public class UniversityCLI implements CLI {
     }
 
     @Override
-    public void runCLI(CRUDRepository<?>[] crudInterfaces) {
+    public void runCLI(CRUDRepository<?>[] crudInterfaces, ManagerRecord managerRecord) {
         while (true) {
             System.out.println("\nSelect an entity type to manage:");
             for (int i = 0; i < crudInterfaces.length; i++) {
@@ -78,11 +85,11 @@ public class UniversityCLI implements CLI {
 
             CRUDRepository<?> selectedRepository = crudInterfaces[entityChoice - 1];
             try {
-                handleEntityOperations(selectedRepository, crudInterfaces);
+                handleEntityOperations(selectedRepository, crudInterfaces, managerRecord);
             } catch (IncompatibleEntity e) {
                 System.out.println(e.getMessage());
                 System.out.println("Please try again.");
-                handleEntityOperations(selectedRepository, crudInterfaces);
+                handleEntityOperations(selectedRepository, crudInterfaces, managerRecord);
             }
         }
     }
@@ -92,7 +99,7 @@ public class UniversityCLI implements CLI {
         System.out.println("Exiting CLI...");
     }
 
-    private void handleEntityOperations(CRUDRepository<?> repository, CRUDRepository<?>[] crudInterfaces) {
+    private void handleEntityOperations(CRUDRepository<?> repository, CRUDRepository<?>[] crudInterfaces, ManagerRecord managerRecord) {
         while (true) {
             System.out.printf("\nManaging %s entities. Choose an operation:%n", repository.getIdentifier() + "s");
             System.out.println("1. Create");
@@ -107,7 +114,7 @@ public class UniversityCLI implements CLI {
             if (operationChoice == 7) break;
 
             switch (operationChoice) {
-                case 1 -> createEntity(repository);
+                case 1 -> createEntity(repository, managerRecord);
 
                 case 2 -> {
                     System.out.print("Enter entity ID to read: ");
@@ -235,22 +242,22 @@ public class UniversityCLI implements CLI {
         entity.setSubjectName(subjectName);
     }
 
-    private void createEntity(CRUDRepository<?> repository) {
+    private void createEntity(CRUDRepository<?> repository, ManagerRecord managerRecord) {
         String className = repository.getIdentifier();
         Entity entity = switch (className) {
-            case "Student" -> createStudent();
-            case "Subject" -> createSubject();
-            case "Teacher" -> createTeacher();
-            case "Evaluation" -> createEvaluation();
-            case "Exercise" -> createExercise();
-            case "Classroom" -> createClassroom();
+            case "Student" -> createStudent(managerRecord);
+            case "Subject" -> createSubject(managerRecord);
+            case "Teacher" -> createTeacher(managerRecord);
+            case "Evaluation" -> createEvaluation(managerRecord);
+            case "Exercise" -> createExercise(managerRecord);
+            case "Classroom" -> createClassroom(managerRecord);
             default -> throw new IncompatibleEntity("Invalid entity type");
         };
         System.out.println(className + " created successfully.");
         System.out.println(entity.toString());
     }
 
-    private Student createStudent() {
+    private Student createStudent(ManagerRecord managerRecord) {
         String studentName;
         String studentEmail;
 
@@ -258,22 +265,22 @@ public class UniversityCLI implements CLI {
         studentName = getUserString();
         System.out.println("Enter student email: ");
         studentEmail = getUserString();
-        return DataReceiver.rawStudent(studentName, studentEmail);
+        return DataReceiver.rawStudent(studentName, studentEmail, managerRecord);
     }
 
-    private Subject createSubject() {
+    private Subject createSubject(ManagerRecord managerRecord) {
         System.out.print("Enter subject name: ");
         String subjectName = getUserString();
-        return DataReceiver.rawSubject(subjectName);
+        return DataReceiver.rawSubject(subjectName, managerRecord);
     }
 
-    private Teacher createTeacher() {
+    private Teacher createTeacher(ManagerRecord managerRecord) {
         System.out.print("Enter teacher name: ");
         String teacherName = getUserString();
-        return DataReceiver.rawTeacher(teacherName);
+        return DataReceiver.rawTeacher(teacherName, managerRecord);
     }
 
-    private Evaluation createEvaluation() {
+    private Evaluation createEvaluation(ManagerRecord managerRecord) {
         String evaluationName;
         int subjectID;
         int studentID;
@@ -286,10 +293,10 @@ public class UniversityCLI implements CLI {
         studentID = Integer.parseInt(getUserString());
         System.out.print("Enter evaluation type: (WRITTEN_EXAM, ORAL_EXAM, FINAL_PRACTICAL_WORK, PRACTICAL_WORK): ");
         evaluationType = getUserString();
-        return DataReceiver.rawEvaluation(evaluationName, subjectID, studentID, evaluationType);
+        return DataReceiver.rawEvaluation(evaluationName, subjectID, studentID, evaluationType, managerRecord);
     }
 
-    private Exercise createExercise() {
+    private Exercise createExercise(ManagerRecord managerRecord) {
         String exerciseName;
         double grade;
         int evaluationID;
@@ -299,13 +306,13 @@ public class UniversityCLI implements CLI {
         grade = Double.parseDouble(getUserString());
         System.out.print("Enter evaluation ID: ");
         evaluationID = Integer.parseInt(getUserString());
-        return DataReceiver.rawExercise(exerciseName, grade, evaluationID);
+        return DataReceiver.rawExercise(exerciseName, grade, evaluationID, managerRecord);
     }
 
-    private Classroom createClassroom() {
+    private Classroom createClassroom(ManagerRecord managerRecord) {
         int classroomID;
         System.out.print("Enter classroom ID: ");
         classroomID = Integer.parseInt(getUserString());
-        return DataReceiver.rawClassroom(classroomID);
+        return DataReceiver.rawClassroom(classroomID, managerRecord);
     }
 }

@@ -1,25 +1,25 @@
-package com.university.service;
+package com.university.service.Logic;
 
 import com.university.inOut.IncompatibleEntity;
 import com.university.model.*;
 import com.university.model.Evaluations.*;
 import com.university.service.CriteriaAnalyzer.CriteriaSorter;
+import com.university.service.EntityManager;
+import com.university.service.ManagerRecord;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
-import static com.university.service.EntityManager.MapIdEntities;
 
 public class DataReceiver {
 
-    private final static EntityManager<Student> StudentManager = ManagerHolder.StudentManager;
-    private static final EntityManager<Teacher> TeacherManager = ManagerHolder.TeacherManager;
-    private final static EntityManager<Classroom> ClassroomManager = ManagerHolder.ClassroomManager;
-    private static final EntityManager<Subject> SubjectManager = ManagerHolder.SubjectManager;
-    private final static EntityManager<Evaluation> EvaluationManager = ManagerHolder.EvaluationManager;
-    private static final EntityManager<Exercise> ExerciseManager = ManagerHolder.ExerciseManager;
+    public static void firstDataPoint(String[] firstInputLine, ManagerRecord ManagerRecord) {
 
-    public static void firstDataPoint(String classroomID,String subjectName, String studentName,
-                                      String studentEmail, String subjectTeacher){
+        String classroomID = firstInputLine[0];
+        String subjectName = firstInputLine[1];
+        String studentName = firstInputLine[2];
+        String studentEmail = firstInputLine[3];
+        String subjectTeacher = firstInputLine[4];
 
         // instance or get model objects
 
@@ -28,10 +28,10 @@ public class DataReceiver {
         Classroom classroom = new Classroom(Integer.parseInt(classroomID));
         Subject subject = new Subject(subjectName);
 
-        teacher = TeacherManager.createOrFetchEntity(teacher);
-        student = StudentManager.createOrFetchEntity(student);
-        classroom = ClassroomManager.createOrFetchEntity(classroom);
-        subject = SubjectManager.createOrFetchEntity(subject);
+        teacher = ManagerRecord.teacherManager().createOrFetchEntity(teacher);
+        student = ManagerRecord.studentManager().createOrFetchEntity(student);
+        classroom = ManagerRecord.classroomManager().createOrFetchEntity(classroom);
+        subject = ManagerRecord.subjectManager().createOrFetchEntity(subject);
 
         // associate possible relationships between objects
 
@@ -52,29 +52,36 @@ public class DataReceiver {
 
     }
 
-    public static void secondDataPoint(String studentName, String subjectName, String evaluationType,
-                                       String evaluationName, String exerciseName, String grade){
+    public static void secondDataPoint(String[] secondInputLine, ManagerRecord ManagerRecord) {
+
+        String studentName = secondInputLine[0];
+        String subjectName = secondInputLine[1];
+        String evaluationType = secondInputLine[2];
+        String evaluationName = secondInputLine[3];
+        String exerciseName = secondInputLine[4];
+        String grade = secondInputLine[5];
 
         Student student = new Student(studentName);
         Subject subject = new Subject(subjectName);
         Evaluation evaluation = sortConstructor(evaluationType, evaluationName, student, subject);
         Exercise exercise = new Exercise(exerciseName, Double.parseDouble(grade), evaluation);
 
-        student = StudentManager.createOrFetchEntity(student);
-        subject = SubjectManager.createOrFetchEntity(subject);
-        evaluation = EvaluationManager.createOrFetchEntity(evaluation);
-        exercise = ExerciseManager.createOrFetchEntity(exercise);
+        student = ManagerRecord.studentManager().createOrFetchEntity(student);
+        subject = ManagerRecord.subjectManager().createOrFetchEntity(subject);
+        evaluation = ManagerRecord.evaluationManager().createOrFetchEntity(evaluation);
+        exercise = ManagerRecord.exerciseManager().createOrFetchEntity(exercise);
 
         student.addSubject(subject);
 
         subject.addStudent(student);
 
         evaluation.addExercise(exercise);
+
     }
 
-    public static void thirdDataPoint(String[] thirdInputLine) {
+    public static void thirdDataPoint(String[] thirdInputLine, ManagerRecord ManagerRecord) {
 
-        HashSet<Evaluation> evaluations = EvaluationManager.entities;
+        HashSet<Evaluation> evaluations = ManagerRecord.evaluationManager().entities;
         for (Evaluation evaluation : evaluations) {
             if (evaluation.isEvaluated()) {continue;}
             //thirdInputLine; {Subject_Name,Criteria_Type,Criteria_Value,Evaluation_Name_1, Evaluation_Name_2, ...}
@@ -92,7 +99,10 @@ public class DataReceiver {
         }
     }
 
-    public static Exercise rawExercise(String exerciseName, double grade, int evaluationID){
+    public static Exercise rawExercise(String exerciseName, double grade, int evaluationID, ManagerRecord ManagerRecord) {
+
+        HashMap<Integer, Entity> MapIdEntities = ManagerRecord.mapIdEntities();
+        EntityManager<Exercise> ExerciseManager = ManagerRecord.exerciseManager();
 
         Evaluation evaluation;
         if (MapIdEntities.get(evaluationID) instanceof Evaluation) {
@@ -108,7 +118,11 @@ public class DataReceiver {
         }
     }
 
-    public static Evaluation rawEvaluation(String evaluationName, int subjectID, int studentID, String evaluationType) {
+    public static Evaluation rawEvaluation(String evaluationName, int subjectID, int studentID, String evaluationType, ManagerRecord ManagerRecord) {
+
+        HashMap<Integer, Entity> MapIdEntities = ManagerRecord.mapIdEntities();
+        EntityManager<Evaluation> EvaluationManager = ManagerRecord.evaluationManager();
+
         // Retrieve Subject and Student by ID using MapIdEntities
         if (MapIdEntities.get(subjectID) instanceof Subject subject && MapIdEntities.get(studentID) instanceof Student student) {
             Evaluation evaluation = sortConstructor(evaluationType, evaluationName, student, subject);
@@ -118,24 +132,28 @@ public class DataReceiver {
         }
     }
 
-    public static Subject rawSubject(String subjectName) {
+    public static Subject rawSubject(String subjectName, ManagerRecord ManagerRecord) {
+        EntityManager<Subject> SubjectManager = ManagerRecord.subjectManager();
         Subject subject = new Subject(subjectName);
         return SubjectManager.createOrFetchEntity(subject);
     }
 
-    public static Teacher rawTeacher(String teacherName) {
+    public static Teacher rawTeacher(String teacherName, ManagerRecord ManagerRecord) {
+        EntityManager<Teacher> TeacherManager = ManagerRecord.teacherManager();
         Teacher teacher = new Teacher(teacherName);
         return TeacherManager.createOrFetchEntity(teacher);
     }
 
-    public static Student rawStudent(String studentName, String studentEmail) {
+    public static Student rawStudent(String studentName, String studentEmail, ManagerRecord ManagerRecord) {
+        EntityManager<Student> StudentManager = ManagerRecord.studentManager();
         Student student = new Student(studentName);
         student.setEmail(studentEmail);
         student = StudentManager.createOrFetchEntity(student);
         return student;
     }
 
-    public static Classroom rawClassroom(int classroomID) {
+    public static Classroom rawClassroom(int classroomID, ManagerRecord ManagerRecord) {
+        EntityManager<Classroom> ClassroomManager = ManagerRecord.classroomManager();
         Classroom classroom = new Classroom(classroomID);
         ClassroomManager.createOrFetchEntity(classroom);
         return classroom;

@@ -2,7 +2,7 @@ package com.university.model;
 
 import java.util.HashSet;
 
-public class Student extends Entity  {
+public class Student extends Entity {
 
     HashSet<Subject> subjects;
     String name;

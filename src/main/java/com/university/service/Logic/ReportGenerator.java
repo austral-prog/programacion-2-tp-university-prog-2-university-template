@@ -1,7 +1,8 @@
-package com.university.service;
+package com.university.service.Logic;
 
 import com.university.model.*;
 import com.university.model.Evaluations.*;
+import com.university.service.ManagerRecord;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -11,15 +12,15 @@ import java.util.List;
 
 public class ReportGenerator {
 
-    public List<String[]> firstReport(List<String[]> inputData) {
+    public List<String[]> firstReport(List<String[]> inputData, ManagerRecord ManagerRecord) {
         // se recorre el csv y se agregan todos los estudiantes con sus cursos
-        for (String[] strings : inputData) {
-            DataReceiver.firstDataPoint(strings[0], strings[1], strings[2], strings[3], strings[4]);
+        for (String[] firstInputLine : inputData) {
+            DataReceiver.firstDataPoint(firstInputLine, ManagerRecord);
         }
         List<String[]> outputData = new ArrayList<>();
         // se recorre la lista de estudiantes y se construye un arreglo para cada elemento de la lista
         // cada par de datos tiene nombre y cantidad de cursos, como indica el header.
-        HashSet<Student> students = ManagerHolder.StudentManager.entities;
+        HashSet<Student> students = ManagerRecord.studentManager().entities;
         for (Student student : students) {
             outputData.add(Formater.format(student, "first"));
         }
@@ -30,13 +31,13 @@ public class ReportGenerator {
         return outputData;
     }
 
-    public List<String[]> secondReport(List<String[]> inputData) {
+    public List<String[]> secondReport(List<String[]> inputData, ManagerRecord ManagerRecord) {
 
-        for (String[] strings : inputData) {
-            DataReceiver.secondDataPoint(strings[0], strings[1], strings[2], strings[3], strings[4], strings[5]);
+        for (String[] secondInputLine : inputData) {
+            DataReceiver.secondDataPoint(secondInputLine, ManagerRecord);
         }
 
-        HashSet<Evaluation> evaluations = ManagerHolder.EvaluationManager.entities;
+        HashSet<Evaluation> evaluations = ManagerRecord.evaluationManager().entities;
 
         List<String[]> output = new ArrayList<>();
         for (Evaluation evaluation : evaluations) {
@@ -53,11 +54,11 @@ public class ReportGenerator {
 
         return output;
     }
-    public List<String[]> thirdReport(List<String[]> input_3csv) {
+    public List<String[]> thirdReport(List<String[]> input_3csv, ManagerRecord ManagerRecord) {
 
-        HashSet<Evaluation>  evaluations = ManagerHolder.EvaluationManager.entities;
+        HashSet<Evaluation>  evaluations = ManagerRecord.evaluationManager().entities;
         for (String[] thirdInputLine : input_3csv) {
-            DataReceiver.thirdDataPoint(thirdInputLine);
+            DataReceiver.thirdDataPoint(thirdInputLine, ManagerRecord);
         }
 
         List<String[]> outputData = new ArrayList<>();

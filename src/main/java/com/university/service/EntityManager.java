@@ -3,6 +3,7 @@ package com.university.service;
 import com.university.CRUDRepository;
 import com.university.inOut.IncompatibleEntity;
 import com.university.model.*;
+import com.university.model.Evaluations.Evaluation;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -13,12 +14,18 @@ import java.util.Map;
 
 public class EntityManager<E extends Entity> implements CRUDRepository<E> {
 
-    public EntityManager(Class<E> entityClass) {
+    public EntityManager(Class<E> entityClass, ManagerRecord managerRecord) {
         this.entityClass = entityClass;
+        this.managerRecord = managerRecord;
+        this.MapIdEntities = managerRecord.mapIdEntities();
+        this.globalEntities = managerRecord.globalEntities();
     }
 
-    static Map<Integer, Entity> MapIdEntities = ManagerHolder.MapIdEntities;
-    private final static HashSet<Entity> globalEntities = ManagerHolder.globalEntities;
+    private static Integer idCounter = 0;
+
+    private final ManagerRecord managerRecord;
+    private final Map<Integer, Entity> MapIdEntities;
+    private final HashSet<Entity> globalEntities;
 
     private final Class<E> entityClass;  // Store the class type of E for type checking
     public HashSet<E> entities = new HashSet<>();
@@ -33,20 +40,26 @@ public class EntityManager<E extends Entity> implements CRUDRepository<E> {
     }
 
     // generates a new unique ID for an entity
-    public static int newId() {
-        return MapIdEntities.size() + 1;
+    public Integer newId() {
+        return ++idCounter;
     }
 
     // Create or fetch methods
 
     public E createOrFetchEntity(E entity) {
-        if (globalEntities.contains(entity)) {return entity;}
+        if (globalEntities.contains(entity)) {
+            for (E existingEntity : entities) {
+                if (existingEntity.equals(entity)) {
+                    return existingEntity;
+                }
+            }
+        }
         registerEntity(entity);
         return entity;
     }
 
     public boolean deleteEntity(E entity) {
-        return Remover.disconnection(entity, this);
+        return Remover.disconnection(entity, this, managerRecord);
     }
 
     public Map<Integer, Entity> getEntityMap() {
@@ -69,7 +82,10 @@ public class EntityManager<E extends Entity> implements CRUDRepository<E> {
         if (entityClass.isInstance(entity)) {
             return entityClass.cast(entity);  // Safe cast using entityClass
         }
-        throw new IncompatibleEntity("Entity is not of the correct type");
+        if (!MapIdEntities.containsKey(id)) {
+            throw new IncompatibleEntity("Entity does not exist");
+        }
+        throw new IncompatibleEntity("Entity is not of the correct type, expected class:" + entityClass.getSimpleName());
     }
 
 
