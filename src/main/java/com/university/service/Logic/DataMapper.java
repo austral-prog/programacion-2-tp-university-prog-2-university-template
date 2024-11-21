@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 
-public class DataReceiver {
+public class DataMapper {
 
     public static void firstDataPoint(String[] firstInputLine, ManagerRecord ManagerRecord) {
 

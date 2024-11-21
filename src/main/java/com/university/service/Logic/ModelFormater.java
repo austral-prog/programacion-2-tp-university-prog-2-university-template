@@ -4,7 +4,7 @@ import com.university.model.Entity;
 import com.university.model.Evaluations.Evaluation;
 import com.university.model.Student;
 
-public class Formater {
+public class ModelFormater {
 
     public static String[] format(Entity entity, String flag) {
         return switch (flag) {

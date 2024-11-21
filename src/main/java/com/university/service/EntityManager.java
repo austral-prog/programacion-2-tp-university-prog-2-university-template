@@ -3,7 +3,6 @@ package com.university.service;
 import com.university.CRUDRepository;
 import com.university.inOut.IncompatibleEntity;
 import com.university.model.*;
-import com.university.model.Evaluations.Evaluation;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -59,7 +58,7 @@ public class EntityManager<E extends Entity> implements CRUDRepository<E> {
     }
 
     public boolean deleteEntity(E entity) {
-        return Remover.disconnection(entity, this, managerRecord);
+        return Destroyer.disconnection(entity, this, managerRecord);
     }
 
     public Map<Integer, Entity> getEntityMap() {

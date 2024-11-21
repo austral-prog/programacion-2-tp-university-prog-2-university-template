@@ -7,7 +7,7 @@ import com.university.inOut.IncompatibleEntity;
 import com.university.model.*;
 import com.university.model.Evaluations.Evaluation;
 import com.university.service.EntityManager;
-import com.university.service.Logic.DataReceiver;
+import com.university.service.Logic.DataMapper;
 import com.university.service.ManagerRecord;
 
 import java.util.HashSet;
@@ -265,19 +265,19 @@ public class UniversityCLI implements CLI {
         studentName = getUserString();
         System.out.println("Enter student email: ");
         studentEmail = getUserString();
-        return DataReceiver.rawStudent(studentName, studentEmail, managerRecord);
+        return DataMapper.rawStudent(studentName, studentEmail, managerRecord);
     }
 
     private Subject createSubject(ManagerRecord managerRecord) {
         System.out.print("Enter subject name: ");
         String subjectName = getUserString();
-        return DataReceiver.rawSubject(subjectName, managerRecord);
+        return DataMapper.rawSubject(subjectName, managerRecord);
     }
 
     private Teacher createTeacher(ManagerRecord managerRecord) {
         System.out.print("Enter teacher name: ");
         String teacherName = getUserString();
-        return DataReceiver.rawTeacher(teacherName, managerRecord);
+        return DataMapper.rawTeacher(teacherName, managerRecord);
     }
 
     private Evaluation createEvaluation(ManagerRecord managerRecord) {
@@ -293,7 +293,7 @@ public class UniversityCLI implements CLI {
         studentID = Integer.parseInt(getUserString());
         System.out.print("Enter evaluation type: (WRITTEN_EXAM, ORAL_EXAM, FINAL_PRACTICAL_WORK, PRACTICAL_WORK): ");
         evaluationType = getUserString();
-        return DataReceiver.rawEvaluation(evaluationName, subjectID, studentID, evaluationType, managerRecord);
+        return DataMapper.rawEvaluation(evaluationName, subjectID, studentID, evaluationType, managerRecord);
     }
 
     private Exercise createExercise(ManagerRecord managerRecord) {
@@ -306,13 +306,13 @@ public class UniversityCLI implements CLI {
         grade = Double.parseDouble(getUserString());
         System.out.print("Enter evaluation ID: ");
         evaluationID = Integer.parseInt(getUserString());
-        return DataReceiver.rawExercise(exerciseName, grade, evaluationID, managerRecord);
+        return DataMapper.rawExercise(exerciseName, grade, evaluationID, managerRecord);
     }
 
     private Classroom createClassroom(ManagerRecord managerRecord) {
         int classroomID;
         System.out.print("Enter classroom ID: ");
         classroomID = Integer.parseInt(getUserString());
-        return DataReceiver.rawClassroom(classroomID, managerRecord);
+        return DataMapper.rawClassroom(classroomID, managerRecord);
     }
 }

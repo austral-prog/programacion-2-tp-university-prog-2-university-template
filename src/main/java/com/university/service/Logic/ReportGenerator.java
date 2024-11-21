@@ -15,14 +15,14 @@ public class ReportGenerator {
     public List<String[]> firstReport(List<String[]> inputData, ManagerRecord ManagerRecord) {
         // se recorre el csv y se agregan todos los estudiantes con sus cursos
         for (String[] firstInputLine : inputData) {
-            DataReceiver.firstDataPoint(firstInputLine, ManagerRecord);
+            DataMapper.firstDataPoint(firstInputLine, ManagerRecord);
         }
         List<String[]> outputData = new ArrayList<>();
         // se recorre la lista de estudiantes y se construye un arreglo para cada elemento de la lista
         // cada par de datos tiene nombre y cantidad de cursos, como indica el header.
         HashSet<Student> students = ManagerRecord.studentManager().entities;
         for (Student student : students) {
-            outputData.add(Formater.format(student, "first"));
+            outputData.add(ModelFormater.format(student, "first"));
         }
         // se ordena en orden alphabetic, compara el elemento 0 de los arreglos de la lista
         outputData.sort(Comparator.comparing(array -> array[0]));
@@ -34,14 +34,14 @@ public class ReportGenerator {
     public List<String[]> secondReport(List<String[]> inputData, ManagerRecord ManagerRecord) {
 
         for (String[] secondInputLine : inputData) {
-            DataReceiver.secondDataPoint(secondInputLine, ManagerRecord);
+            DataMapper.secondDataPoint(secondInputLine, ManagerRecord);
         }
 
         HashSet<Evaluation> evaluations = ManagerRecord.evaluationManager().entities;
 
         List<String[]> output = new ArrayList<>();
         for (Evaluation evaluation : evaluations) {
-            String[] line = Formater.format(evaluation, "second");
+            String[] line = ModelFormater.format(evaluation, "second");
             output.add(line);
         }
 
@@ -58,13 +58,13 @@ public class ReportGenerator {
 
         HashSet<Evaluation>  evaluations = ManagerRecord.evaluationManager().entities;
         for (String[] thirdInputLine : input_3csv) {
-            DataReceiver.thirdDataPoint(thirdInputLine, ManagerRecord);
+            DataMapper.thirdDataPoint(thirdInputLine, ManagerRecord);
         }
 
         List<String[]> outputData = new ArrayList<>();
 
         for (Evaluation evaluation : evaluations) {
-            String[] line = Formater.format(evaluation, "third");
+            String[] line = ModelFormater.format(evaluation, "third");
             outputData.add(line);
         }
 

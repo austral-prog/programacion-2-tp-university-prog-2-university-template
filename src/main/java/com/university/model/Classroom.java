@@ -22,6 +22,10 @@ public class Classroom extends Entity {
         return String.valueOf(ClassroomId);
     }
 
+    public int getClassroomID() {
+        return ClassroomId;
+    }
+
     public List<Subject> getSubjects() {
         return Subjects;
     }

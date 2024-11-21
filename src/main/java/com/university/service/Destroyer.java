@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 
-public class Remover {
+public class Destroyer {
 
     public static boolean disconnection(Entity entity, EntityManager<?> manager, ManagerRecord ManagerRecord) {
         // Check object type of manager
