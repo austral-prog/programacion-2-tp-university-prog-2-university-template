@@ -10,6 +10,6 @@ public class OralExam extends Evaluation {
 
     @Override
     public double getGrade() {
-        return exercises.getFirst().getGrade();
+        return exercises.get(0).getGrade();
     }
 }

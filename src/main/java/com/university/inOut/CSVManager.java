@@ -23,7 +23,7 @@ public class CSVManager {
         }
 
         if (ignoreHeader) {
-            data.removeFirst();  // Elimina el header si se le pasa true como argumento
+            data.remove(0);  // Elimina el header si se le pasa true como argumento
         }
 
         return data;  // Retorna la lista con los datos del CSV

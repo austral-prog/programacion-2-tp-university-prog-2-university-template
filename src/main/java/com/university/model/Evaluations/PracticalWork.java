@@ -10,7 +10,7 @@ public class PracticalWork extends Evaluation {
 
     @Override
     public double getGrade() { // returns the last grade
-        return exercises.getLast().getGrade();
+        return exercises.get(exercises.size()-1).getGrade();
     }
 }
 //PRACTICAL_WORK

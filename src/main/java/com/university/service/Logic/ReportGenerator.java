@@ -27,7 +27,7 @@ public class ReportGenerator {
         // se ordena en orden alphabetic, compara el elemento 0 de los arreglos de la lista
         outputData.sort(Comparator.comparing(array -> array[0]));
         String[] header = {"Student_Name","Course_Count"};
-        outputData.addFirst(header);
+        outputData.add(0, header);
         return outputData;
     }
 
@@ -50,7 +50,7 @@ public class ReportGenerator {
                 .thenComparing(array -> array[2]));                     // Then by Student_Name
 
         String[] header = {"Subject_Name","Evaluation_Name","Student_Name", "Grade"};
-        output.addFirst(header);
+        output.add(0, header);
 
         return output;
     }
@@ -69,7 +69,7 @@ public class ReportGenerator {
         }
 
         String[] header = {"Evaluation_Name","Relevant_Grade","Evaluation_Type","Criteria","Criteria_Value","Passed/Failed"};
-        outputData.addFirst(header);
+        outputData.add(0, header);
 
         return outputData;
     }
