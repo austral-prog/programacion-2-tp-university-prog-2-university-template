@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: com.university.app.UniversityCLI
+Class-Path: com.university.app.UniversityCLI
+

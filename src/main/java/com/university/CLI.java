@@ -1,5 +1,7 @@
 package com.university;
 
+import com.university.service.ManagerRecord;
+
 public interface CLI {
     /**
      * Runs the Command Line Interface (CLI) for interacting with multiple entity types.
@@ -10,5 +12,5 @@ public interface CLI {
      *                       Each CRUDInterface allows the CLI to perform Create, Read, Update, and Delete
      *                       operations on that specific entity type.
      */
-    void runCLI(CRUDRepository<?>[] crudInterfaces);
+    void runCLI(CRUDRepository<?>[] crudInterfaces, ManagerRecord managerRecord);
 }
