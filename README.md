@@ -58,7 +58,7 @@ New input file:
 
 ## Objective
 
-The goal of this assignment is to extend the previous Java program to read student data from a CSV file, process it, and output aggregated data to another CSV file. You will also write tests to verify that you designed classes work as they are supposed to.
+The goal of this assignment is to extend the previous Java program to read student data from a CSV file, process it, and output aggregated data to another CSV file. You will also write tests to verify that your designed classes work as they are supposed to.
 
 New input file:
 - `input_3.csv`: Contains additional student data.
@@ -73,3 +73,15 @@ When finishing this third assignment, you should have in your code:
 - at least one generic class
 - your classes organized in packages
 - over 80% test coverage
+
+# 4 - CRUD and CLI
+
+## Objective
+
+The goal of this assignment is to have a CLI (command line interface) app to manually create any entity in your existing model, and apply the CRUDRepository interfaces to your existing model.
+
+When finishing this fourth assignment, you should have in your code:
+
+- a CLI `main` to manually create any of your system's entities.
+- Have CRUD objects that follow the given CRUDRepository interface.
+- Have and properly handle exceptions in your code.
