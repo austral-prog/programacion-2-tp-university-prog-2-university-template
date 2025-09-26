@@ -1,5 +1,5 @@
 
-# 1 - Submit date: October 4th - Java CSV Aggregation Assignment
+# 1 - Java CSV Aggregation Assignment
 
 ## Objective
 
