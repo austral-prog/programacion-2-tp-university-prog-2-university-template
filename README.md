@@ -1,5 +1,5 @@
 
-# 1 - Submit date: October 4th - Java CSV Aggregation Assignment
+# 1 - Java CSV Aggregation Assignment Phase 1
 
 ## Objective
 
@@ -44,7 +44,7 @@ The goal of this assignment is to create a Java program that reads student data 
 - Ensure your code passes the test in `AppTest.java`, plus your own tests.
 
 
-# 2 - Submit date: October 11th - Java CSV Aggregation Assignment
+# 2 - Java CSV Aggregation Assignment Phase 2
 
 ## Objective
 
